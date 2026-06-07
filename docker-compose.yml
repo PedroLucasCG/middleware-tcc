@@ -1,0 +1,22 @@
+services:
+  peer-a:
+    build: .
+    container_name: peer-a
+    networks:
+      - p2p-net
+
+  peer-b:
+    build: .
+    container_name: peer-b
+    networks:
+      - p2p-net
+
+  peer-c:
+    build: .
+    container_name: peer-c
+    networks:
+      - p2p-net
+
+networks:
+  p2p-net:
+    driver: bridge
