@@ -1,7 +1,7 @@
 package transport.infra;
 
-import transport.application.TransportListener;
-import transport.application.TransportListenerDocker;
+import synchronization.application.StrategyMiddleware;
+import synchronization.domain.Middleware;
 import transport.domain.PeerInfo;
 
 import java.net.DatagramPacket;
@@ -13,16 +13,17 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.Base64;
 
 public class DockerBroadcastLayer implements TransportLayer {
-    private static final String GROUP = "230.0.0.0";
-    private static final int PORT = 4446;
+    private static final String GROUP = Middleware.getGroup();
+    private static final int PORT = Middleware.getPort();
 
-    private final String peerId = UUID.randomUUID().toString();
-    private final Map<String, PeerInfo> peers = new ConcurrentHashMap<>();
+    private final String peerId = Middleware.getNodeId();
+    private final Map<String, PeerInfo> peers = Middleware.getPeers();
 
     private volatile boolean running;
-    private TransportListener listener;
+    private StrategyMiddleware listener;
 
     @Override
     public void start() {
@@ -48,7 +49,7 @@ public class DockerBroadcastLayer implements TransportLayer {
     }
 
     @Override
-    public void setListener(TransportListener listener) {
+    public void setListener(StrategyMiddleware listener) {
         this.listener = listener;
     }
 
@@ -168,10 +169,10 @@ public class DockerBroadcastLayer implements TransportLayer {
     }
 
     private String encode(byte[] payload) {
-        return java.util.Base64.getEncoder().encodeToString(payload);
+        return Base64.getEncoder().encodeToString(payload);
     }
 
     private byte[] decode(String payload) {
-        return java.util.Base64.getDecoder().decode(payload);
+        return Base64.getDecoder().decode(payload);
     }
 }

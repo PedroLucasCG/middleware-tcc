@@ -1,6 +1,6 @@
 package transport.infra;
 
-import transport.application.TransportListener;
+import synchronization.application.StrategyMiddleware;
 
 public interface TransportLayer {
     void start();
@@ -11,5 +11,5 @@ public interface TransportLayer {
 
     void send(String peerId, byte[] payload);
 
-    void setListener(TransportListener listener);
+    void setListener(StrategyMiddleware listener);
 }
