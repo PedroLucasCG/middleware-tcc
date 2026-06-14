@@ -4,18 +4,27 @@ services:
     container_name: peer-a
     networks:
       - p2p-net
+    environment:
+      - PEER_NAME=peer-a
+      - SENDER=true
 
   peer-b:
     build: .
     container_name: peer-b
     networks:
       - p2p-net
+    environment:
+        - PEER_NAME=peer-b
+        - SENDER=false
 
   peer-c:
     build: .
     container_name: peer-c
     networks:
       - p2p-net
+    environment:
+      - PEER_NAME=peer-c
+      - SENDER=false
 
 networks:
   p2p-net:

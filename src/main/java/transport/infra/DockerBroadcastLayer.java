@@ -2,6 +2,7 @@ package transport.infra;
 
 import synchronization.application.StrategyMiddleware;
 import synchronization.domain.Middleware;
+import synchronization.domain.TransactionRecord;
 import transport.domain.PeerInfo;
 
 import java.net.DatagramPacket;
@@ -12,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.Base64;
 
 public class DockerBroadcastLayer implements TransportLayer {
@@ -39,13 +39,14 @@ public class DockerBroadcastLayer implements TransportLayer {
     }
 
     @Override
-    public void broadcast(byte[] payload) {
+    public void broadcast(String record) {
+        byte[] payload = record.getBytes(StandardCharsets.UTF_8);
         sendMulticast("MSG " + peerId + " " + encode(payload));
     }
 
     @Override
-    public void send(String peerId, byte[] payload) {
-        broadcast(payload);
+    public void send(String peerId, String record) {
+        broadcast(record);
     }
 
     @Override
