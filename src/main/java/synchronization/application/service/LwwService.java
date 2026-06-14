@@ -1,16 +1,15 @@
 package synchronization.application.service;
 
 import shared.utils.ByteMessageHandler;
+import synchronization.application.listener.StrategyMiddleware;
 import synchronization.domain.TransactionRecord;
-import synchronization.infra.ConcurrentHashMapStore;
 import synchronization.infra.RecordStore;
 import transport.infra.TransportLayer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class LwwService implements StrategyService {
+public class LwwService implements SynchronizationService {
     private final TransportLayer transportLayer;
     private final RecordStore recordStore;
 
@@ -51,6 +50,11 @@ public class LwwService implements StrategyService {
     @Override
     public void start() {
         transportLayer.start();
+    }
+
+    @Override
+    public void setListener(StrategyMiddleware listener) {
+        this.transportLayer.setListener(listener);
     }
 
     public void apply(TransactionRecord transactionRecord) {

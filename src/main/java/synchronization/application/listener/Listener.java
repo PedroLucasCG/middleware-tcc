@@ -1,29 +1,28 @@
 package synchronization.application.listener;
 
-import synchronization.application.service.LwwService;
-import synchronization.application.service.StrategyService;
+import synchronization.application.service.SynchronizationService;
 import synchronization.domain.Middleware;
 import synchronization.domain.TransactionRecord;
 import transport.domain.PeerInfo;
-import transport.infra.TransportLayer;
 
 import java.time.Instant;
 
-public class Listener extends Middleware implements StrategyMiddleware {
-    private StrategyService strategyService;
+public class Listener implements StrategyMiddleware {
+    private SynchronizationService synchronizationService;
 
-    public Listener(StrategyService strategyService) {
-        this.strategyService = strategyService;
+    public Listener(SynchronizationService synchronizationService) {
+        this.synchronizationService = synchronizationService;
+        this.synchronizationService.setListener(this);
     }
 
     @Override
     public void start() {
-        strategyService.start();
+        synchronizationService.start();
     }
 
     @Override
     public void createOrUpdate(TransactionRecord transactionRecord) {
-        strategyService.upsertMessage(transactionRecord);
+        synchronizationService.upsertMessage(transactionRecord);
         logEvent("MESSAGE_SENT", "ALL", transactionRecord.getValue());
     }
 
@@ -49,7 +48,7 @@ public class Listener extends Middleware implements StrategyMiddleware {
 
     @Override
     public void onMessageReceived(String peerId, byte[] payload) {
-        TransactionRecord transactionRecord = strategyService.readMessage(peerId, payload);
+        TransactionRecord transactionRecord = synchronizationService.readMessage(peerId, payload);
 
         logEvent("MESSAGE_RECEIVED", peerId, transactionRecord.getValue());
     }

@@ -1,12 +1,11 @@
 package synchronization.application.service;
 
+import synchronization.application.listener.StrategyMiddleware;
 import synchronization.domain.TransactionRecord;
 
-import java.util.Map;
-import java.util.Optional;
-
-public interface StrategyService {
+public interface SynchronizationService {
     void upsertMessage(TransactionRecord transactionRecord);
     TransactionRecord readMessage(String peerId, byte[] payload);
     void start();
+    void setListener(StrategyMiddleware listener);
 }

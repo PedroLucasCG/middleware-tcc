@@ -1,7 +1,7 @@
 import synchronization.application.listener.Listener;
 import synchronization.application.listener.StrategyMiddleware;
 import synchronization.application.service.LwwService;
-import synchronization.application.service.StrategyService;
+import synchronization.application.service.SynchronizationService;
 import synchronization.domain.Middleware;
 import synchronization.domain.TransactionRecord;
 import synchronization.infra.ConcurrentHashMapStore;
@@ -14,7 +14,7 @@ import java.util.*;
 public class Program {
     public static void main(String[] args) throws Exception {
         TransportLayer transport = new DockerBroadcastLayer();
-        StrategyService service = new LwwService(transport, new ConcurrentHashMapStore());
+        SynchronizationService service = new LwwService(transport, new ConcurrentHashMapStore());
         StrategyMiddleware middleware = new Listener(service);
         middleware.start();
 
