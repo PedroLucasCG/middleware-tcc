@@ -1,25 +1,28 @@
 package synchronization.application.service;
 
-import synchronization.domain.Middleware;
+import shared.utils.ByteMessageHandler;
 import synchronization.domain.TransactionRecord;
+import synchronization.infra.ConcurrentHashMapStore;
+import synchronization.infra.RecordStore;
 import transport.infra.TransportLayer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class LwwService implements StrategyService {
     private final TransportLayer transportLayer;
+    private final RecordStore recordStore;
 
-    public LwwService(TransportLayer transportLayer) {
+    public LwwService(TransportLayer transportLayer, RecordStore recordStore) {
         this.transportLayer = transportLayer;
+        this.recordStore = recordStore;
     }
 
     @Override
     public void upsertMessage(TransactionRecord transactionRecord) {
         transportLayer.broadcast(
-                Middleware.serialize(transactionRecord)
+                ByteMessageHandler.serialize(transactionRecord)
         );
         System.out.println(
                 "SENDING id=" + transactionRecord.getId() +
@@ -32,7 +35,7 @@ public class LwwService implements StrategyService {
     @Override
     public TransactionRecord readMessage(String peerId, byte[] payload) {
         String value = new String(payload, StandardCharsets.UTF_8);
-        TransactionRecord transactionRecord = Middleware.deserialize(value);
+        TransactionRecord transactionRecord = ByteMessageHandler.deserialize(value);
 
         snapshot().forEach((id, record) -> {
             System.out.println(
@@ -50,40 +53,11 @@ public class LwwService implements StrategyService {
         transportLayer.start();
     }
 
-
-    private final Map<String, TransactionRecord> records = new ConcurrentHashMap<>();
-
-    public void apply(TransactionRecord incoming) {
-        records.merge(
-                incoming.getId(),
-                incoming,
-                this::resolve
-        );
-    }
-
-    private Optional<TransactionRecord> findById(String id) {
-        return Optional.ofNullable(records.get(id));
+    public void apply(TransactionRecord transactionRecord) {
+        recordStore.mergeIncomingRecord(transactionRecord);
     }
 
     private Map<String, TransactionRecord> snapshot() {
-        return Map.copyOf(records);
-    }
-
-    private TransactionRecord resolve(TransactionRecord local, TransactionRecord incoming) {
-        int timeComparison = incoming.getUpdatedAt().compareTo(local.getUpdatedAt());
-
-        if (timeComparison > 0) {
-            return incoming;
-        }
-
-        if (timeComparison < 0) {
-            return local;
-        }
-
-        if (incoming.getNodeId().compareTo(local.getNodeId()) > 0) {
-            return incoming;
-        }
-
-        return local;
+        return Map.copyOf(recordStore.getAllTransactionRecords());
     }
 }
