@@ -1,4 +1,4 @@
-package synchronization.application;
+package synchronization.application.listener;
 
 import synchronization.domain.TransactionRecord;
 import transport.domain.PeerInfo;

@@ -1,38 +1,29 @@
-package synchronization.application;
+package synchronization.application.listener;
 
-import synchronization.domain.LwwStrategy;
+import synchronization.application.service.LwwService;
+import synchronization.application.service.StrategyService;
 import synchronization.domain.Middleware;
 import synchronization.domain.TransactionRecord;
 import transport.domain.PeerInfo;
 import transport.infra.TransportLayer;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
-public class LwwMiddleware extends Middleware implements StrategyMiddleware {
-    private final LwwStrategy strategy = new LwwStrategy();
+public class Listener extends Middleware implements StrategyMiddleware {
+    private StrategyService strategyService;
 
-    public LwwMiddleware(TransportLayer transportLayer) {
-        super(transportLayer);
-        super.getTransportLayer().setListener(this);
+    public Listener(StrategyService strategyService) {
+        this.strategyService = strategyService;
     }
 
     @Override
     public void start() {
-        super.getTransportLayer().start();
+        strategyService.start();
     }
 
     @Override
     public void createOrUpdate(TransactionRecord transactionRecord) {
-        super.getTransportLayer().broadcast(
-                super.serialize(transactionRecord)
-        );
-        System.out.println(
-            "SENDING id=" + transactionRecord.getId() +
-            " value=" + transactionRecord.getValue() +
-            " time=" + transactionRecord.getUpdatedAt()
-        );
+        strategyService.upsertMessage(transactionRecord);
         logEvent("MESSAGE_SENT", "ALL", transactionRecord.getValue());
     }
 
@@ -58,18 +49,9 @@ public class LwwMiddleware extends Middleware implements StrategyMiddleware {
 
     @Override
     public void onMessageReceived(String peerId, byte[] payload) {
-        String value = new String(payload, StandardCharsets.UTF_8);
-        TransactionRecord transactionRecord = super.deserialize(value);
+        TransactionRecord transactionRecord = strategyService.readMessage(peerId, payload);
 
         logEvent("MESSAGE_RECEIVED", peerId, transactionRecord.getValue());
-        strategy.snapshot().forEach((id, record) -> {
-            System.out.println(
-                "SNAPSHOT id=" + id +
-                " value=" + record.getValue() +
-                " time=" + record.getUpdatedAt()
-            );
-        });
-        strategy.apply(transactionRecord);
     }
 
     public void logEvent(String event, String target, String message) {

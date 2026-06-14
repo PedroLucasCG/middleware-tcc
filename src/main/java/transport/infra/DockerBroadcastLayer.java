@@ -1,8 +1,7 @@
 package transport.infra;
 
-import synchronization.application.StrategyMiddleware;
+import synchronization.application.listener.StrategyMiddleware;
 import synchronization.domain.Middleware;
-import synchronization.domain.TransactionRecord;
 import transport.domain.PeerInfo;
 
 import java.net.DatagramPacket;

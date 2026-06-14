@@ -9,17 +9,12 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class Middleware {
-    private final TransportLayer transportLayer;
     private static final String nodeId = UUID.randomUUID().toString();
     private static final Map<String, PeerInfo> peers = new ConcurrentHashMap<>();
     private static final String GROUP = "230.0.0.0";
     private static final int PORT = 4446;
 
-    public Middleware(TransportLayer transportLayer) {
-        this.transportLayer = transportLayer;
-    }
-
-    protected String serialize(TransactionRecord record) {
+    public static String serialize(TransactionRecord record) {
         return String.join("|",
                 record.getId(),
                 record.getValue(),
@@ -29,7 +24,7 @@ public class Middleware {
         );
     }
 
-    protected TransactionRecord deserialize(String raw) {
+    public static TransactionRecord deserialize(String raw) {
         String[] parts = raw.split("\\|", -1);
 
         return new TransactionRecord(
@@ -39,10 +34,6 @@ public class Middleware {
                 parts[3],
                 Boolean.parseBoolean(parts[4])
         );
-    }
-
-    public TransportLayer getTransportLayer() {
-        return transportLayer;
     }
 
     public static String getNodeId() {

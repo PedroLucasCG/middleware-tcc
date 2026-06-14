@@ -1,5 +1,6 @@
-import synchronization.application.LwwMiddleware;
-import synchronization.application.StrategyMiddleware;
+import synchronization.application.listener.Listener;
+import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.service.LwwService;
 import synchronization.domain.Middleware;
 import synchronization.domain.TransactionRecord;
 import transport.infra.DockerBroadcastLayer;
@@ -11,7 +12,7 @@ import java.util.*;
 public class Program {
     public static void main(String[] args) throws Exception {
         TransportLayer transport = new DockerBroadcastLayer();
-        StrategyMiddleware middleware = new LwwMiddleware(transport);
+        StrategyMiddleware middleware = new Listener(new LwwService(transport));
         middleware.start();
 
         //teste

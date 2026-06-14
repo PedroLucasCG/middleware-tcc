@@ -1,7 +1,6 @@
 package transport.infra;
 
-import synchronization.application.StrategyMiddleware;
-import synchronization.domain.TransactionRecord;
+import synchronization.application.listener.StrategyMiddleware;
 
 public interface TransportLayer {
     void start();
