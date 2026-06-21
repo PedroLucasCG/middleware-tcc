@@ -3,7 +3,7 @@ package transport.infra;
 import synchronization.application.listener.StrategyMiddleware;
 import transport.domain.NodeConfig;
 import transport.domain.PeerInfo;
-import transport.domain.PeerRegistry;
+import transport.domain.PeerStore;
 import transport.domain.WireMessage;
 
 import java.net.DatagramPacket;
@@ -18,20 +18,20 @@ public class DockerBroadcastLayer implements TransportLayer {
 
     private final NodeConfig config;
     private final WireMessageCodec codec;
-    private final PeerRegistry peerRegistry;
+    private final PeerStore peerStore;
     private final PeerAnnouncer announcer;
 
     private volatile boolean running;
     private StrategyMiddleware listener;
 
     public DockerBroadcastLayer(NodeConfig config) {
-        this(config, new WireMessageCodec(), new PeerRegistry());
+        this(config, new WireMessageCodec(), new PeerStore());
     }
 
-    public DockerBroadcastLayer(NodeConfig config, WireMessageCodec codec, PeerRegistry peerRegistry) {
+    public DockerBroadcastLayer(NodeConfig config, WireMessageCodec codec, PeerStore peerStore) {
         this.config = config;
         this.codec = codec;
-        this.peerRegistry = peerRegistry;
+        this.peerStore = peerStore;
         this.announcer = new PeerAnnouncer(
                 () -> codec.encodeHello(config.nodeId()),
                 this::sendMulticast,
@@ -120,11 +120,11 @@ public class DockerBroadcastLayer implements TransportLayer {
                 hello.timestamp()
         );
 
-        if (listener != null && peerRegistry.isNew(hello.senderId())) {
+        if (listener != null && peerStore.isNew(hello.senderId())) {
             listener.onPeerDiscovered(peer);
         }
 
-        peerRegistry.upsert(hello.senderId(), peer);
+        peerStore.upsert(hello.senderId(), peer);
     }
 
     private void onMessage(WireMessage.Msg msg) {

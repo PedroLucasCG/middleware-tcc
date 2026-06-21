@@ -3,15 +3,15 @@ package transport.domain;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PeerRegistry {
+public class PeerStore {
 
     private final Map<String, PeerInfo> peers;
 
-    public PeerRegistry() {
+    public PeerStore() {
         this(new ConcurrentHashMap<>());
     }
 
-    public PeerRegistry(Map<String, PeerInfo> peers) {
+    public PeerStore(Map<String, PeerInfo> peers) {
         this.peers = peers;
     }
 

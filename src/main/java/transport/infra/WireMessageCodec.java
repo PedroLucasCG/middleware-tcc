@@ -1,6 +1,6 @@
 package transport.infra;
 
-import shared.utils.Base64Coder;
+import shared.utils.Base64Codec;
 import transport.domain.WireMessage;
 
 import java.time.Instant;
@@ -16,7 +16,7 @@ public class WireMessageCodec {
     }
 
     public String encodeMsg(String senderId, byte[] payload) {
-        return MSG + " " + senderId + " " + Base64Coder.encode(payload);
+        return MSG + " " + senderId + " " + Base64Codec.encode(payload);
     }
 
     public Optional<WireMessage> decode(String raw) {
@@ -54,7 +54,7 @@ public class WireMessageCodec {
             return Optional.empty();
         }
 
-        byte[] payload = Base64Coder.decode(parts[2]);
+        byte[] payload = Base64Codec.decode(parts[2]);
         return Optional.of(new WireMessage.Msg(senderId, payload));
     }
 }
