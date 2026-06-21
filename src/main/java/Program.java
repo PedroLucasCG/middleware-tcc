@@ -2,19 +2,20 @@ import synchronization.application.listener.Listener;
 import synchronization.application.listener.StrategyMiddleware;
 import synchronization.application.service.LwwService;
 import synchronization.application.service.SynchronizationService;
-import synchronization.domain.Middleware;
+import transport.aplication.controller.BroadcastController;
+import transport.aplication.controller.Controller;
+import transport.aplication.service.DockerService;
 import synchronization.domain.TransactionRecord;
 import synchronization.infra.ConcurrentHashMapStore;
-import transport.infra.DockerBroadcastLayer;
-import transport.infra.TransportLayer;
+import transport.domain.NodeConfig;
 
 import java.time.Instant;
 import java.util.*;
 
 public class Program {
     public static void main(String[] args) throws Exception {
-        TransportLayer transport = new DockerBroadcastLayer();
-        SynchronizationService service = new LwwService(transport, new ConcurrentHashMapStore());
+        BroadcastController controller = new Controller(new DockerService());
+        SynchronizationService service = new LwwService(controller, new ConcurrentHashMapStore());
         StrategyMiddleware middleware = new Listener(service);
         middleware.start();
 
@@ -42,7 +43,7 @@ public class Program {
                         id,
                         message,
                         Instant.now(),
-                        Middleware.getNodeId(),
+                        NodeConfig.defaults().nodeId(),
                         false
                 ));
             }

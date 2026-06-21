@@ -4,23 +4,24 @@ import shared.utils.ByteMessageHandler;
 import synchronization.application.listener.StrategyMiddleware;
 import synchronization.domain.TransactionRecord;
 import synchronization.infra.RecordStore;
+import transport.aplication.controller.BroadcastController;
 import transport.infra.TransportLayer;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public class LwwService implements SynchronizationService {
-    private final TransportLayer transportLayer;
+    private final BroadcastController controller;
     private final RecordStore recordStore;
 
-    public LwwService(TransportLayer transportLayer, RecordStore recordStore) {
-        this.transportLayer = transportLayer;
+    public LwwService(BroadcastController controller, RecordStore recordStore) {
+        this.controller = controller;
         this.recordStore = recordStore;
     }
 
     @Override
     public void upsertMessage(TransactionRecord transactionRecord) {
-        transportLayer.broadcast(
+        controller.broadcast(
                 ByteMessageHandler.serialize(transactionRecord)
         );
         System.out.println(
@@ -48,16 +49,11 @@ public class LwwService implements SynchronizationService {
     }
 
     @Override
-    public void start() {
-        transportLayer.start();
+    public void start(StrategyMiddleware listener) {
+        controller.start(listener);
     }
 
-    @Override
-    public void setListener(StrategyMiddleware listener) {
-        this.transportLayer.setListener(listener);
-    }
-
-    public void apply(TransactionRecord transactionRecord) {
+    private void apply(TransactionRecord transactionRecord) {
         recordStore.mergeIncomingRecord(transactionRecord);
     }
 

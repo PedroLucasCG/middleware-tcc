@@ -1,23 +1,22 @@
 package synchronization.application.listener;
 
 import synchronization.application.service.SynchronizationService;
-import synchronization.domain.Middleware;
 import synchronization.domain.TransactionRecord;
+import transport.domain.NodeConfig;
 import transport.domain.PeerInfo;
 
 import java.time.Instant;
 
 public class Listener implements StrategyMiddleware {
-    private SynchronizationService synchronizationService;
+    private final SynchronizationService synchronizationService;
 
     public Listener(SynchronizationService synchronizationService) {
         this.synchronizationService = synchronizationService;
-        this.synchronizationService.setListener(this);
     }
 
     @Override
     public void start() {
-        synchronizationService.start();
+        synchronizationService.start(this);
     }
 
     @Override
@@ -57,7 +56,7 @@ public class Listener implements StrategyMiddleware {
         System.out.printf(
                 "{\"time\":\"%s\",\"peer\":\"%s\",\"event\":\"%s\",\"target\":\"%s\",\"message\":\"%s\"}%n",
                 Instant.now(),
-                Middleware.getNodeId(),
+                NodeConfig.defaults().nodeId(),
                 event,
                 target,
                 message

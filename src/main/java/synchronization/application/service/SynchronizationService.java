@@ -6,6 +6,5 @@ import synchronization.domain.TransactionRecord;
 public interface SynchronizationService {
     void upsertMessage(TransactionRecord transactionRecord);
     TransactionRecord readMessage(String peerId, byte[] payload);
-    void start();
-    void setListener(StrategyMiddleware listener);
+    void start(StrategyMiddleware listener);
 }
