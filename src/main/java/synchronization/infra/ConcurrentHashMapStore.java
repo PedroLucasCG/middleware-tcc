@@ -1,5 +1,6 @@
 package synchronization.infra;
 
+import synchronization.application.infra.RecordStore;
 import synchronization.domain.TransactionRecord;
 
 import java.util.*;

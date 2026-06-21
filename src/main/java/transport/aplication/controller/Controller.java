@@ -1,8 +1,8 @@
 package transport.aplication.controller;
 
+import synchronization.application.infra.BroadcastController;
 import synchronization.application.listener.StrategyMiddleware;
 import transport.aplication.service.BroadcastService;
-import transport.infra.TransportLayer;
 
 public class Controller implements BroadcastController {
     private final BroadcastService broadcastService;

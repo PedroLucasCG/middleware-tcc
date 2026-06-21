@@ -2,7 +2,7 @@ import synchronization.application.listener.Listener;
 import synchronization.application.listener.StrategyMiddleware;
 import synchronization.application.service.LwwService;
 import synchronization.application.service.SynchronizationService;
-import transport.aplication.controller.BroadcastController;
+import synchronization.application.infra.BroadcastController;
 import transport.aplication.controller.Controller;
 import transport.aplication.service.DockerService;
 import synchronization.domain.TransactionRecord;

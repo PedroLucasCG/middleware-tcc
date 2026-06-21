@@ -1,9 +1,7 @@
-package synchronization.infra;
+package synchronization.application.infra;
 
 import synchronization.domain.TransactionRecord;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 

@@ -3,9 +3,8 @@ package synchronization.application.service;
 import shared.utils.ByteMessageHandler;
 import synchronization.application.listener.StrategyMiddleware;
 import synchronization.domain.TransactionRecord;
-import synchronization.infra.RecordStore;
-import transport.aplication.controller.BroadcastController;
-import transport.infra.TransportLayer;
+import synchronization.application.infra.RecordStore;
+import synchronization.application.infra.BroadcastController;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;

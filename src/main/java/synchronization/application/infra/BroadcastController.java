@@ -1,4 +1,4 @@
-package transport.aplication.controller;
+package synchronization.application.infra;
 
 import synchronization.application.listener.StrategyMiddleware;
 
