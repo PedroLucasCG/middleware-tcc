@@ -1,5 +1,6 @@
 package shared.utils;
 
+import synchronization.domain.Annotation;
 import synchronization.domain.TransactionRecord;
 
 import java.time.Instant;
@@ -8,7 +9,7 @@ public class ByteMessageHandler {
     public static String serialize(TransactionRecord record) {
         return String.join("|",
                 record.getId(),
-                record.getValue(),
+                record.getMessage(),
                 record.getUpdatedAt().toString(),
                 record.getNodeId(),
                 String.valueOf(record.isDeleted())
@@ -19,11 +20,8 @@ public class ByteMessageHandler {
         String[] parts = raw.split("\\|", -1);
 
         return new TransactionRecord(
-                parts[0],
-                parts[1],
-                Instant.parse(parts[2]),
-                parts[3],
-                Boolean.parseBoolean(parts[4])
+                new Annotation(parts[1]),
+                parts[3]
         );
     }
 }

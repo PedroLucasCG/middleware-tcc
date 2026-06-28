@@ -25,7 +25,7 @@ public class LwwService implements SynchronizationService {
         );
         System.out.println(
                 "SENDING id=" + transactionRecord.getId() +
-                " value=" + transactionRecord.getValue() +
+                " value=" + transactionRecord.getMessage() +
                 " time=" + transactionRecord.getUpdatedAt()
         );
 
@@ -39,7 +39,7 @@ public class LwwService implements SynchronizationService {
         snapshot().forEach((id, record) -> {
             System.out.println(
                     "SNAPSHOT id=" + id +
-                    " value=" + record.getValue() +
+                    " value=" + record.getMessage() +
                     " time=" + record.getUpdatedAt()
             );
         });

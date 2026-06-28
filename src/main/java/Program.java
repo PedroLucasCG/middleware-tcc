@@ -3,6 +3,7 @@ import synchronization.application.listener.StrategyMiddleware;
 import synchronization.application.service.LwwService;
 import synchronization.application.service.SynchronizationService;
 import synchronization.application.infra.BroadcastController;
+import synchronization.domain.Annotation;
 import transport.aplication.controller.Controller;
 import transport.aplication.service.DockerService;
 import synchronization.domain.TransactionRecord;
@@ -40,11 +41,8 @@ public class Program {
                 String message = messages[randomIndex][1];
                 String id =  messages[randomIndex][0];
                 middleware.createOrUpdate(new TransactionRecord(
-                        id,
-                        message,
-                        Instant.now(),
-                        NodeConfig.defaults().nodeId(),
-                        false
+                        new Annotation(message),
+                        NodeConfig.defaults().nodeId()
                 ));
             }
         }

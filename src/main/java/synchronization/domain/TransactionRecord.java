@@ -1,40 +1,33 @@
 package synchronization.domain;
 
 import java.time.Instant;
-import java.util.UUID;
 
 public class TransactionRecord {
-    private String id;
-    private String value;
-    private Instant updatedAt;
+    private Annotation annotation;
     private String nodeId;
-    private boolean deleted;
 
-    public TransactionRecord(String id, String value, Instant updatedAt, String nodeId, boolean deleted) {
-        this.id = id;
-        this.value = value;
-        this.updatedAt = updatedAt;
+    public TransactionRecord(Annotation annotation, String nodeId) {
+        this.annotation = annotation;
         this.nodeId = nodeId;
-        this.deleted = deleted;
     }
 
     public String getId() {
-        return id;
-    }
-
-    public String getValue() {
-        return value;
+        return annotation.getId().toString();
     }
 
     public Instant getUpdatedAt() {
-        return updatedAt;
+        return annotation.getUpdated();
     }
 
     public String getNodeId() {
         return nodeId;
     }
 
+    public String getMessage() {
+        return annotation.getValue();
+    }
+
     public boolean isDeleted() {
-        return deleted;
+        return annotation.isDeleted();
     }
 }

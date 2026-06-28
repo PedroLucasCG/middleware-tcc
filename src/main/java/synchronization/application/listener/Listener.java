@@ -22,7 +22,7 @@ public class Listener implements StrategyMiddleware {
     @Override
     public void createOrUpdate(TransactionRecord transactionRecord) {
         synchronizationService.upsertMessage(transactionRecord);
-        logEvent("MESSAGE_SENT", "ALL", transactionRecord.getValue());
+        logEvent("MESSAGE_SENT", "ALL", transactionRecord.getMessage());
     }
 
     @Override
@@ -49,7 +49,7 @@ public class Listener implements StrategyMiddleware {
     public void onMessageReceived(String peerId, byte[] payload) {
         TransactionRecord transactionRecord = synchronizationService.readMessage(peerId, payload);
 
-        logEvent("MESSAGE_RECEIVED", peerId, transactionRecord.getValue());
+        logEvent("MESSAGE_RECEIVED", peerId, transactionRecord.getMessage());
     }
 
     public void logEvent(String event, String target, String message) {

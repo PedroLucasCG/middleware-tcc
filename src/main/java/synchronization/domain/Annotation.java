@@ -1,0 +1,47 @@
+package synchronization.domain;
+
+import java.time.Instant;
+import java.util.UUID;
+
+public class Annotation {
+    private UUID id;
+    private String value;
+    private boolean deleted;
+    private Instant created;
+    private Instant updated;
+
+    public Annotation() {
+    }
+
+    public Annotation(String value) {
+        this.id = UUID.randomUUID();
+        this.value = value;
+        this.deleted = false;
+        this.created = Instant.now();
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public boolean isDeleted() {
+        this.updated = Instant.now();
+        return deleted;
+    }
+
+    public Instant getCreated() {
+        return this.created;
+    }
+
+    public Instant getUpdated() {
+        return this.updated;
+    }
+
+    public void deleteMessage() {
+        this.deleted = true;
+    }
+}
