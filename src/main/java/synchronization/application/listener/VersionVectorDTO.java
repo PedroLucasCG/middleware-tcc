@@ -1,4 +1,15 @@
 package synchronization.application.listener;
 
-public class VersionVectorDTO {
+import synchronization.domain.TransactionRecord;
+
+public class VersionVectorDTO implements StrategyDTO {
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    @Override
+    public TransactionRecord makeTransactionRecordFromDto() {
+        return null;
+    }
 }

@@ -7,12 +7,12 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ConcurrentHashMapStore implements RecordStore {
-    private final Map<String, TransactionRecord> records = new ConcurrentHashMap<>();
+    private final Map<UUID, TransactionRecord> records = new ConcurrentHashMap<>();
 
     @Override
     public void mergeIncomingRecord(TransactionRecord transactionRecord) {
         records.merge(
-                transactionRecord.getId(),
+                transactionRecord.getAnnotationId(),
                 transactionRecord,
                 this::resolve
         );
@@ -24,13 +24,13 @@ public class ConcurrentHashMapStore implements RecordStore {
     }
 
     @Override
-    public Map<String, TransactionRecord> getAllTransactionRecords() {
+    public Map<UUID, TransactionRecord> getAllTransactionRecords() {
         return records;
     }
 
     @Override
     public void addTransactionRecord(TransactionRecord transactionRecord) {
-        records.put(transactionRecord.getId(), transactionRecord);
+        records.put(transactionRecord.getAnnotationId(), transactionRecord);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class ConcurrentHashMapStore implements RecordStore {
 
     @Override
     public void updateTransactionRecord(TransactionRecord transactionRecord) {
-        records.put(transactionRecord.getId(), transactionRecord);
+        records.put(transactionRecord.getAnnotationId(), transactionRecord);
     }
 
     private TransactionRecord resolve(TransactionRecord local, TransactionRecord incoming) {

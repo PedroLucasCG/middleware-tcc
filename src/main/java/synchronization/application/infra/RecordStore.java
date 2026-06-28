@@ -8,7 +8,7 @@ import java.util.UUID;
 public interface RecordStore {
     void mergeIncomingRecord(TransactionRecord transactionRecord);
     TransactionRecord getTransactionRecordById(UUID transactionId);
-    Map<String, TransactionRecord> getAllTransactionRecords();
+    Map<UUID, TransactionRecord> getAllTransactionRecords();
     void addTransactionRecord(TransactionRecord transactionRecord);
     void deleteTransactionRecordById(UUID transactionId);
     void updateTransactionRecord(TransactionRecord transactionRecord);

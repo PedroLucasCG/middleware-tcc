@@ -20,6 +20,12 @@ public class Annotation {
         this.created = Instant.now();
     }
 
+    public Annotation(UUID id, String value, Boolean deleted) {
+        this.value = value;
+        this.deleted = deleted;
+        this.id = id;
+    }
+
     public String getValue() {
         return value;
     }

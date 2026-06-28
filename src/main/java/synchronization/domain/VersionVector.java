@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public final class VersionVector implements Serializable {
+public final class VersionVector {
     private Map<String, Long> versions = new HashMap<>();
 
     public VersionVector() {
