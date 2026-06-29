@@ -10,12 +10,12 @@ public class ConcurrentHashMapStore implements RecordStore {
     private final Map<UUID, TransactionRecord> records = new ConcurrentHashMap<>();
 
     @Override
-    public void mergeIncomingRecord(TransactionRecord transactionRecord) {
-        records.merge(
+    public TransactionRecord mergeIncomingRecord(TransactionRecord transactionRecord) {
+         return records.merge(
                 transactionRecord.getAnnotationId(),
                 transactionRecord,
                 this::resolve
-        );
+         );
     }
 
     @Override

@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface RecordStore {
-    void mergeIncomingRecord(TransactionRecord transactionRecord);
+    TransactionRecord mergeIncomingRecord(TransactionRecord transactionRecord);
     TransactionRecord getTransactionRecordById(UUID transactionId);
     Optional<TransactionRecord> getTransactionRecordByAnnotationId(UUID annotationId);
     Map<UUID, TransactionRecord> getAllTransactionRecords();

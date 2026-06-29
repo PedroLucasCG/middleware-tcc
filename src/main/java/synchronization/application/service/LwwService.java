@@ -38,11 +38,7 @@ public class LwwService implements SynchronizationService {
     @Override
     public TransactionRecord readMessage(String peerId, byte[] payload) {
         String value = new String(payload, StandardCharsets.UTF_8);
-        TransactionRecord incomingRecord = ByteMessageHandler.deserialize(value);
-        TransactionRecord transactionRecord = recordStore
-                .getTransactionRecordByAnnotationId(incomingRecord.getAnnotationId())
-                .orElse(new TransactionRecord(incomingRecord));
-
+        TransactionRecord incomingRecord = new TransactionRecord(ByteMessageHandler.deserialize(value));
 
         snapshot().forEach((id, record) -> {
             System.out.println(
@@ -51,8 +47,8 @@ public class LwwService implements SynchronizationService {
                     " time=" + record.getUpdatedAt()
             );
         });
-        recordStore.mergeIncomingRecord(transactionRecord);
-        return transactionRecord;
+
+        return recordStore.mergeIncomingRecord(incomingRecord);
     }
 
     @Override
