@@ -12,12 +12,14 @@ public class TransactionRecord {
     public TransactionRecord(Annotation annotation, UUID nodeId) {
         this.annotation = annotation;
         this.nodeIdFromIncomingMessage = nodeId;
+        this.transactionId = UUID.randomUUID();
     }
 
     public TransactionRecord(Annotation annotation, UUID nodeId, VersionVector versionVector) {
         this.annotation = annotation;
         this.nodeIdFromIncomingMessage = nodeId;
         this.versionVector = versionVector;
+        this.transactionId = UUID.randomUUID();
     }
 
     // usado para criar uma anotação que está vindo da rede
@@ -27,6 +29,16 @@ public class TransactionRecord {
         this.annotation = new Annotation(annotationId, value, deleted);
         this.nodeIdFromIncomingMessage = nodeIdFromIncomingMessage;
         this.transactionId = UUID.randomUUID();
+    }
+
+    // caso a anotação não exista localmente este construtor a cria a partir da anotação vinda da rede
+    public TransactionRecord(TransactionRecord incomingRecord) {
+        this.annotation = new Annotation(
+                incomingRecord.getAnnotationId(),
+                incomingRecord.getMessage(),
+                incomingRecord.isDeleted());
+        this.nodeIdFromIncomingMessage = incomingRecord.getNodeId();
+        this.transactionId = incomingRecord.getTransactionId();
     }
 
     public UUID getAnnotationId() {

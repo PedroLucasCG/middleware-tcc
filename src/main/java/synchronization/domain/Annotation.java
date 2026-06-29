@@ -18,12 +18,15 @@ public class Annotation {
         this.value = value;
         this.deleted = false;
         this.created = Instant.now();
+        this.updated = Instant.now();
     }
 
     public Annotation(UUID id, String value, Boolean deleted) {
         this.value = value;
         this.deleted = deleted;
         this.id = id;
+        this.created = Instant.now();
+        this.updated = Instant.now();
     }
 
     public String getValue() {
@@ -44,10 +47,11 @@ public class Annotation {
     }
 
     public Instant getUpdated() {
-        return this.updated;
+        return this.updated == null ? this.created : this.updated;
     }
 
     public void deleteMessage() {
         this.deleted = true;
+        this.updated = Instant.now();
     }
 }

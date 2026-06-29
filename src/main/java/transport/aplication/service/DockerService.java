@@ -41,7 +41,7 @@ public class DockerService implements BroadcastService {
     @Override
     public void broadcast(String record) {
         byte[] payload = record.getBytes(StandardCharsets.UTF_8);
-        transportLayer.sendMulticast(codec.encodeMsg(config.nodeId(), payload));
+        transportLayer.sendMulticast(codec.encodeMsg(config.nodeId().toString(), payload));
     }
 
     @Override

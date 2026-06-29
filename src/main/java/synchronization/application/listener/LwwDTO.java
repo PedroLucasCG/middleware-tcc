@@ -26,12 +26,12 @@ public class LwwDTO implements StrategyDTO {
 
     public LwwDTO(String[] parts) {
         this.typeDTO = StrategyType.LWW;
-        this.lastUpdate = Instant.parse(parts[0]);
-        this.message = parts[1];
-        this.nodeIdFromIncomingMessage = UUID.fromString(parts[2]);
-        this.deleted = Boolean.parseBoolean(parts[3]);
-        this.transactionId = UUID.fromString(parts[4]);
-        this.annotationId = UUID.fromString(parts[5]);
+        this.lastUpdate = Instant.parse(parts[1]);
+        this.message = parts[2];
+        this.nodeIdFromIncomingMessage = UUID.fromString(parts[3]);
+        this.deleted = Boolean.parseBoolean(parts[4]);
+        this.transactionId = UUID.fromString(parts[5]);
+        this.annotationId = UUID.fromString(parts[6]);
     }
 
     @Override

@@ -24,6 +24,16 @@ public class ConcurrentHashMapStore implements RecordStore {
     }
 
     @Override
+    public Optional<TransactionRecord> getTransactionRecordByAnnotationId(UUID annotationId) {
+        for (TransactionRecord transactionRecord : records.values()) {
+            if (transactionRecord.getAnnotationId().equals(annotationId)) {
+                return Optional.of(transactionRecord);
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public Map<UUID, TransactionRecord> getAllTransactionRecords() {
         return records;
     }

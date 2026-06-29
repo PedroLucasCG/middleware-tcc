@@ -23,6 +23,7 @@ public class LwwService implements SynchronizationService {
     @Override
     public void upsertMessage(TransactionRecord transactionRecord) {
         var data = new LwwDTO(transactionRecord);
+        System.out.println(data);
         controller.broadcast(
                 ByteMessageHandler.serialize(data)
         );
@@ -37,7 +38,11 @@ public class LwwService implements SynchronizationService {
     @Override
     public TransactionRecord readMessage(String peerId, byte[] payload) {
         String value = new String(payload, StandardCharsets.UTF_8);
-        TransactionRecord transactionRecord = ByteMessageHandler.deserialize(value);
+        TransactionRecord incomingRecord = ByteMessageHandler.deserialize(value);
+        TransactionRecord transactionRecord = recordStore
+                .getTransactionRecordByAnnotationId(incomingRecord.getAnnotationId())
+                .orElse(new TransactionRecord(incomingRecord));
+
 
         snapshot().forEach((id, record) -> {
             System.out.println(
@@ -46,17 +51,13 @@ public class LwwService implements SynchronizationService {
                     " time=" + record.getUpdatedAt()
             );
         });
-        apply(transactionRecord);
+        recordStore.mergeIncomingRecord(transactionRecord);
         return transactionRecord;
     }
 
     @Override
     public void start(StrategyMiddleware listener) {
         controller.start(listener);
-    }
-
-    private void apply(TransactionRecord transactionRecord) {
-        recordStore.mergeIncomingRecord(transactionRecord);
     }
 
     private Map<UUID, TransactionRecord> snapshot() {

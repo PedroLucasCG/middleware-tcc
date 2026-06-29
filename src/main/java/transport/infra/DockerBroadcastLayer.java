@@ -33,7 +33,7 @@ public class DockerBroadcastLayer implements TransportLayer {
         this.codec = codec;
         this.peerStore = peerStore;
         this.announcer = new PeerAnnouncer(
-                () -> codec.encodeHello(config.nodeId()),
+                () -> codec.encodeHello(config.nodeId().toString()),
                 this::sendMulticast,
                 ANNOUNCE_INTERVAL_MILLIS
         );
