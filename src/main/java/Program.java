@@ -37,11 +37,10 @@ public class Program {
         if (sender) {
             for(int i = 0; i < messages.length; i++){
                 Thread.sleep(5000);
-                int randomIndex = random.nextInt(messages.length);
-                String message = messages[randomIndex][1];
-                String id =  messages[randomIndex][0];
+                String message = messages[i][1];
+                String id =  messages[i][0];
                 middleware.createOrUpdate(new TransactionRecord(
-                        new Annotation(message),
+                        new Annotation(message, UUID.fromString(id)),
                         NodeConfig.defaults().nodeId()
                 ));
             }

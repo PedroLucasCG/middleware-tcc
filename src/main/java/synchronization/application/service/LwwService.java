@@ -22,8 +22,8 @@ public class LwwService implements SynchronizationService {
 
     @Override
     public void upsertMessage(TransactionRecord transactionRecord) {
+        System.out.println(transactionRecord.getMessage());
         var data = new LwwDTO(transactionRecord);
-        System.out.println(data);
         controller.broadcast(
                 ByteMessageHandler.serialize(data)
         );
@@ -38,7 +38,7 @@ public class LwwService implements SynchronizationService {
     @Override
     public TransactionRecord readMessage(String peerId, byte[] payload) {
         String value = new String(payload, StandardCharsets.UTF_8);
-        TransactionRecord incomingRecord = new TransactionRecord(ByteMessageHandler.deserialize(value));
+        TransactionRecord incomingRecord = ByteMessageHandler.deserialize(value);
 
         snapshot().forEach((id, record) -> {
             System.out.println(

@@ -21,6 +21,14 @@ public class Annotation {
         this.updated = Instant.now();
     }
 
+    public Annotation(String value, UUID id) {
+        this.id = id;
+        this.value = value;
+        this.deleted = false;
+        this.created = Instant.now();
+        this.updated = Instant.now();
+    }
+
     public Annotation(UUID id, String value, Boolean deleted) {
         this.value = value;
         this.deleted = deleted;
