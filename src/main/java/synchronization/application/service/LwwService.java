@@ -3,6 +3,7 @@ package synchronization.application.service;
 import shared.utils.ByteMessageHandler;
 import synchronization.application.listener.LwwDTO;
 import synchronization.application.listener.StrategyMiddleware;
+import synchronization.domain.LwwConflitctResolver;
 import synchronization.domain.TransactionRecord;
 import synchronization.application.infra.RecordStore;
 import synchronization.application.infra.BroadcastController;
@@ -48,7 +49,7 @@ public class LwwService implements SynchronizationService {
             );
         });
 
-        return recordStore.mergeIncomingRecord(incomingRecord);
+        return recordStore.mergeIncomingRecord(incomingRecord, new LwwConflitctResolver());
     }
 
     @Override

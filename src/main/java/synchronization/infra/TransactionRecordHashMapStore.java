@@ -1,20 +1,21 @@
 package synchronization.infra;
 
 import synchronization.application.infra.RecordStore;
+import synchronization.domain.ConflictResolver;
 import synchronization.domain.TransactionRecord;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ConcurrentHashMapStore implements RecordStore {
+public class TransactionRecordHashMapStore implements RecordStore {
     private final Map<UUID, TransactionRecord> records = new ConcurrentHashMap<>();
 
     @Override
-    public TransactionRecord mergeIncomingRecord(TransactionRecord transactionRecord) {
+    public TransactionRecord mergeIncomingRecord(TransactionRecord transactionRecord, ConflictResolver conflictResolver) {
          return records.merge(
                 transactionRecord.getAnnotationId(),
                 transactionRecord,
-                this::resolve
+                conflictResolver::resolve
          );
     }
 
@@ -51,23 +52,5 @@ public class ConcurrentHashMapStore implements RecordStore {
     @Override
     public void updateTransactionRecord(TransactionRecord transactionRecord) {
         records.put(transactionRecord.getAnnotationId(), transactionRecord);
-    }
-
-    private TransactionRecord resolve(TransactionRecord local, TransactionRecord incoming) {
-        int timeComparison = incoming.getUpdatedAt().compareTo(local.getUpdatedAt());
-
-        if (timeComparison > 0) {
-            return incoming;
-        }
-
-        if (timeComparison < 0) {
-            return local;
-        }
-
-        if (incoming.getNodeId().compareTo(local.getNodeId()) > 0) {
-            return incoming;
-        }
-
-        return local;
     }
 }
