@@ -41,6 +41,13 @@ public class TransactionRecord {
         this.transactionId = incomingRecord.getTransactionId();
     }
 
+    public VersionVector getVersionVector() {
+        if (versionVector == null) {
+            versionVector = new VersionVector();
+        }
+        return versionVector;
+    }
+
     public UUID getAnnotationId() {
         return annotation.getId();
     }

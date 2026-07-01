@@ -1,7 +1,7 @@
 package synchronization.infra;
 
 import synchronization.application.infra.RecordStore;
-import synchronization.domain.ConflictResolver;
+import synchronization.application.service.ConflictResolver;
 import synchronization.domain.TransactionRecord;
 
 import java.util.*;

@@ -1,6 +1,6 @@
 package synchronization.application.infra;
 
-import synchronization.domain.ConflictResolver;
+import synchronization.application.service.ConflictResolver;
 import synchronization.domain.TransactionRecord;
 
 import java.util.Map;

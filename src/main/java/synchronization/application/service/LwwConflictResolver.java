@@ -1,6 +1,8 @@
-package synchronization.domain;
+package synchronization.application.service;
 
-public class LwwConflitctResolver implements ConflictResolver {
+import synchronization.domain.TransactionRecord;
+
+public class LwwConflictResolver implements ConflictResolver {
 
     public TransactionRecord resolve(TransactionRecord local, TransactionRecord incoming) {
         int timeComparison = incoming.getUpdatedAt().compareTo(local.getUpdatedAt());
