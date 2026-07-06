@@ -1,6 +1,7 @@
 package synchronization.domain;
 
-import java.io.Serializable;
+import transport.domain.NodeConfig;
+
 import java.util.*;
 
 public final class VersionVector {
@@ -88,7 +89,6 @@ public final class VersionVector {
                 : new HashMap<>(versions);
     }
 
-    @Override
     public String toString() {
         return versions.toString();
     }

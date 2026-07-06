@@ -1,35 +1,36 @@
 package synchronization.application.service;
 
 import shared.utils.ByteMessageHandler;
-import synchronization.application.listener.LwwDTO;
-import synchronization.application.listener.StrategyMiddleware;
-import synchronization.domain.TransactionRecord;
-import synchronization.application.infra.RecordStore;
 import synchronization.application.infra.BroadcastController;
+import synchronization.application.infra.RecordStore;
+import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.listener.VersionVectorDTO;
+import synchronization.domain.TransactionRecord;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
-public class LwwService implements SynchronizationService {
+public class VersionVectorService implements SynchronizationService {
     private final BroadcastController controller;
     private final RecordStore recordStore;
 
-    public LwwService(BroadcastController controller, RecordStore recordStore) {
+    public VersionVectorService(BroadcastController controller, RecordStore recordStore) {
         this.controller = controller;
         this.recordStore = recordStore;
     }
 
     @Override
     public void upsertMessage(TransactionRecord transactionRecord) {
-        var data = new LwwDTO(transactionRecord);
+        transactionRecord.upsertVersion();
+        var data = new VersionVectorDTO(transactionRecord);
         controller.broadcast(
                 ByteMessageHandler.serialize(data)
         );
         System.out.println(
                 "SENDING id=" + transactionRecord.getAnnotationId() +
-                " value=" + transactionRecord.getMessage() +
-                " time=" + transactionRecord.getUpdatedAt()
+                        " value=" + transactionRecord.getMessage() +
+                        " time=" + transactionRecord.getUpdatedAt()
         );
         recordStore.addTransactionRecord(transactionRecord);
     }
@@ -42,12 +43,12 @@ public class LwwService implements SynchronizationService {
         snapshot().forEach((id, record) -> {
             System.out.println(
                     "SNAPSHOT id=" + id +
-                    " value=" + record.getMessage() +
-                    " time=" + record.getUpdatedAt()
+                            " value=" + record.getMessage() +
+                            " time=" + record.getUpdatedAt()
             );
         });
 
-        return recordStore.mergeIncomingRecord(incomingRecord, new LwwConflictResolver());
+        return recordStore.mergeIncomingRecord(incomingRecord, new VersionVectorConflictResolver());
     }
 
     @Override

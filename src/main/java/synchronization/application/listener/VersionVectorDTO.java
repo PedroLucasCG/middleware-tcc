@@ -1,38 +1,50 @@
 package synchronization.application.listener;
 
+import shared.utils.Base64Codec;
 import shared.utils.VersionVectorStringParser;
 import synchronization.domain.TransactionRecord;
 
 import java.time.Instant;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 public class VersionVectorDTO implements StrategyDTO {
-    private StrategyType typeDTO;
-    private Instant lastUpdate;
-    private String message;
-    private UUID nodeIdFromIncomingMessage;
-    private Boolean deleted;
-    private UUID transactionId;
-    private UUID annotationId;
-    private Map<UUID, Long> versions = new HashMap<>();
+    private final StrategyType typeDTO;
+    private final Instant lastUpdate;
+    private final String message;
+    private final UUID nodeIdFromIncomingMessage;
+    private final Boolean deleted;
+    private final UUID transactionId;
+    private final UUID annotationId;
+    private final Map<UUID, Long> versions;
 
     public VersionVectorDTO(TransactionRecord transactionRecord) {
-        this.typeDTO = StrategyType.LWW;
+        this.typeDTO = StrategyType.VERSION_VECTOR;
         this.lastUpdate = transactionRecord.getUpdatedAt();
         this.message = transactionRecord.getMessage();
         this.nodeIdFromIncomingMessage = transactionRecord.getNodeId();
         this.deleted = transactionRecord.isDeleted();
         this.transactionId = transactionRecord.getTransactionId();
         this.annotationId = transactionRecord.getAnnotationId();
-        this.versions = transactionRecord.getVersionVector().getVersions();
+        this.versions = new HashMap<>(
+                transactionRecord
+                        .getVersionVector()
+                        .getVersions()
+        );
     }
 
     public VersionVectorDTO(String[] parts) {
-        this.typeDTO = StrategyType.LWW;
+        if (parts == null || parts.length != 8) {
+            throw new IllegalArgumentException(
+                    "VersionVectorDTO requires exactly 8 fields"
+            );
+        }
+
+        this.typeDTO = StrategyType.VERSION_VECTOR;
         this.lastUpdate = Instant.parse(parts[1]);
-        this.message = parts[2];
+        this.message = Base64Codec.decodeMessage(parts[2]);
         this.nodeIdFromIncomingMessage = UUID.fromString(parts[3]);
         this.deleted = Boolean.parseBoolean(parts[4]);
         this.transactionId = UUID.fromString(parts[5]);
@@ -45,7 +57,7 @@ public class VersionVectorDTO implements StrategyDTO {
         return String.join("|",
                 this.typeDTO.toString(),
                 this.lastUpdate.toString(),
-                this.message,
+                Base64Codec.encodeMessage(this.message),
                 this.nodeIdFromIncomingMessage.toString(),
                 String.valueOf(deleted),
                 this.transactionId.toString(),
@@ -56,6 +68,11 @@ public class VersionVectorDTO implements StrategyDTO {
 
     @Override
     public TransactionRecord makeTransactionRecordFromDto() {
-        return null;
+        return new TransactionRecord(
+                this.message,
+                this.deleted,
+                this.nodeIdFromIncomingMessage,
+                this.annotationId
+        );
     }
 }

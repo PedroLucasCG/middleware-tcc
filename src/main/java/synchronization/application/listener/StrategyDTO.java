@@ -27,9 +27,7 @@ public interface StrategyDTO {
         return switch (strategyType) {
             case LWW -> new LwwDTO(parts);
 
-            case VERSION_VECTOR -> throw new UnsupportedOperationException(
-                    "VERSION_VECTOR deserialization is not implemented"
-            );
+            case VERSION_VECTOR -> new VersionVectorDTO(parts);
 
             case CRDT -> throw new UnsupportedOperationException(
                     "CRDT deserialization is not implemented"

@@ -1,5 +1,7 @@
 package synchronization.domain;
 
+import transport.domain.NodeConfig;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -39,6 +41,7 @@ public class TransactionRecord {
                 incomingRecord.isDeleted());
         this.nodeIdFromIncomingMessage = incomingRecord.getNodeId();
         this.transactionId = incomingRecord.getTransactionId();
+        this.versionVector = new VersionVector(incomingRecord.versionVector.getVersions());
     }
 
     public VersionVector getVersionVector() {
@@ -70,5 +73,13 @@ public class TransactionRecord {
 
     public boolean isDeleted() {
         return annotation.isDeleted();
+    }
+
+    public void upsertVersion() {
+        this.versionVector = versionVector.incremented(NodeConfig.defaults().nodeId());
+    }
+
+    public VectorRelation versionVectorCompare(TransactionRecord other) {
+        return this.versionVector.compare(other.versionVector);
     }
 }
