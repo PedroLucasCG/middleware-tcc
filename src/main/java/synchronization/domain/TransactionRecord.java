@@ -90,4 +90,8 @@ public class TransactionRecord {
     public VectorRelation versionVectorCompare(TransactionRecord other) {
         return this.versionVector.compare(other.getVersionVector());
     }
+
+    public VersionVector mergeReplicas(TransactionRecord other) {
+        return this.versionVector.merged(other.getVersionVector());
+    }
 }

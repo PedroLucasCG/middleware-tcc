@@ -12,11 +12,15 @@ public class VersionVectorConflictResolver implements ConflictResolver {
 
         VectorRelation relation = local.versionVectorCompare(incoming);
 
-        return switch (relation) {
+        var result =  switch (relation) {
             case BEFORE -> incoming;
             case AFTER, EQUAL -> local;
             case CONCURRENT -> resolveConcurrent(local, incoming);
         };
+
+        result.mergeReplicas(incoming);
+
+        return result;
     }
 
     private TransactionRecord resolveConcurrent(TransactionRecord local, TransactionRecord incoming) {
