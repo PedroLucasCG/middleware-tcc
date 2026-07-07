@@ -15,6 +15,7 @@ public class TransactionRecord {
         this.annotation = annotation;
         this.nodeIdFromIncomingMessage = nodeId;
         this.transactionId = UUID.randomUUID();
+        this.versionVector = new VersionVector();
     }
 
     public TransactionRecord(Annotation annotation, UUID nodeId, VersionVector versionVector) {
@@ -31,6 +32,13 @@ public class TransactionRecord {
         this.annotation = new Annotation(annotationId, value, deleted);
         this.nodeIdFromIncomingMessage = nodeIdFromIncomingMessage;
         this.transactionId = UUID.randomUUID();
+    }
+
+    public TransactionRecord(String value, Boolean deleted, UUID nodeIdFromIncomingMessage, UUID annotationId, VersionVector versionVector) {
+        this.annotation = new Annotation(annotationId, value, deleted);
+        this.nodeIdFromIncomingMessage = nodeIdFromIncomingMessage;
+        this.transactionId = UUID.randomUUID();
+        this.versionVector = versionVector;
     }
 
     // caso a anotação não exista localmente este construtor a cria a partir da anotação vinda da rede
@@ -80,6 +88,6 @@ public class TransactionRecord {
     }
 
     public VectorRelation versionVectorCompare(TransactionRecord other) {
-        return this.versionVector.compare(other.versionVector);
+        return this.versionVector.compare(other.getVersionVector());
     }
 }

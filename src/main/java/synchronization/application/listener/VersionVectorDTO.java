@@ -3,6 +3,7 @@ package synchronization.application.listener;
 import shared.utils.Base64Codec;
 import shared.utils.VersionVectorStringParser;
 import synchronization.domain.TransactionRecord;
+import synchronization.domain.VersionVector;
 
 import java.time.Instant;
 import java.util.Base64;
@@ -72,7 +73,8 @@ public class VersionVectorDTO implements StrategyDTO {
                 this.message,
                 this.deleted,
                 this.nodeIdFromIncomingMessage,
-                this.annotationId
+                this.annotationId,
+                new VersionVector(this.versions)
         );
     }
 }
