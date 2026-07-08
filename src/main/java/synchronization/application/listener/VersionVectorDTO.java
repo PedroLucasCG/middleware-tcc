@@ -2,11 +2,11 @@ package synchronization.application.listener;
 
 import shared.utils.Base64Codec;
 import shared.utils.VersionVectorStringParser;
+import synchronization.domain.StrategyType;
 import synchronization.domain.TransactionRecord;
 import synchronization.domain.VersionVector;
 
 import java.time.Instant;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

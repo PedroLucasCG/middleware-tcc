@@ -1,4 +1,4 @@
-package synchronization.application.listener;
+package synchronization.domain;
 
 public enum StrategyType {
     LWW,

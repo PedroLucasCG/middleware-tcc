@@ -1,5 +1,6 @@
 package synchronization.application.listener;
 
+import synchronization.domain.StrategyType;
 import synchronization.domain.TransactionRecord;
 
 import java.time.Instant;
