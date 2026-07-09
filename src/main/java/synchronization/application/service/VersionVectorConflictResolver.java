@@ -18,7 +18,7 @@ public class VersionVectorConflictResolver implements ConflictResolver {
             case CONCURRENT -> resolveConcurrent(local, incoming);
         };
 
-        result.mergeReplicas(incoming);
+        result.mergeVersionVectorReplicas(incoming);
 
         return result;
     }

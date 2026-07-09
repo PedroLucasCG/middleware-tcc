@@ -30,9 +30,7 @@ public interface StrategyDTO {
 
             case VERSION_VECTOR -> new VersionVectorDTO(parts);
 
-            case CRDT -> throw new UnsupportedOperationException(
-                    "CRDT deserialization is not implemented"
-            );
+            case CRDT -> new CrdtDTO(parts);
         };
     }
 }

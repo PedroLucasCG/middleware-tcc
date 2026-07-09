@@ -1,7 +1,7 @@
 package synchronization.application.listener;
 
 import shared.utils.Base64Codec;
-import shared.utils.VersionVectorStringParser;
+import shared.utils.StrategyDTOStringParser;
 import synchronization.domain.StrategyType;
 import synchronization.domain.TransactionRecord;
 import synchronization.domain.VersionVector;
@@ -50,7 +50,7 @@ public class VersionVectorDTO implements StrategyDTO {
         this.deleted = Boolean.parseBoolean(parts[4]);
         this.transactionId = UUID.fromString(parts[5]);
         this.annotationId = UUID.fromString(parts[6]);
-        this.versions = VersionVectorStringParser.stringToVersionVector(parts[7]);
+        this.versions = StrategyDTOStringParser.stringToVersionVector(parts[7]);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class VersionVectorDTO implements StrategyDTO {
                 String.valueOf(deleted),
                 this.transactionId.toString(),
                 this.annotationId.toString(),
-                VersionVectorStringParser.mapToString(this.versions)
+                StrategyDTOStringParser.mapVersionVectorToString(this.versions)
         );
     }
 

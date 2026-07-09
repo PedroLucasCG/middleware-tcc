@@ -3,6 +3,9 @@ package synchronization.domain;
 import transport.domain.NodeConfig;
 
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public class TransactionRecord {
@@ -10,6 +13,7 @@ public class TransactionRecord {
     private Annotation annotation;
     private UUID nodeIdFromIncomingMessage;
     private VersionVector versionVector;
+    private CrdtState crdtState;
 
     public TransactionRecord(Annotation annotation, UUID nodeId) {
         this.annotation = annotation;
@@ -18,10 +22,18 @@ public class TransactionRecord {
         this.versionVector = new VersionVector();
     }
 
+
     public TransactionRecord(Annotation annotation, UUID nodeId, VersionVector versionVector) {
         this.annotation = annotation;
         this.nodeIdFromIncomingMessage = nodeId;
         this.versionVector = versionVector;
+        this.transactionId = UUID.randomUUID();
+    }
+
+    public TransactionRecord(Annotation annotation, UUID nodeId, Map<UUID, Set<Crdt>> operations) {
+        this.annotation = annotation;
+        this.nodeIdFromIncomingMessage = nodeId;
+        this.crdtState = new CrdtState(operations);
         this.transactionId = UUID.randomUUID();
     }
 
@@ -39,6 +51,13 @@ public class TransactionRecord {
         this.nodeIdFromIncomingMessage = nodeIdFromIncomingMessage;
         this.transactionId = UUID.randomUUID();
         this.versionVector = versionVector;
+    }
+
+    public TransactionRecord(String value, Boolean deleted, UUID nodeIdFromIncomingMessage, UUID annotationId, Map<UUID, Set<Crdt>> operations) {
+        this.annotation = new Annotation(annotationId, value, deleted);
+        this.nodeIdFromIncomingMessage = nodeIdFromIncomingMessage;
+        this.transactionId = UUID.randomUUID();
+        this.crdtState = new  CrdtState(operations);
     }
 
     // caso a anotação não exista localmente este construtor a cria a partir da anotação vinda da rede
@@ -91,7 +110,23 @@ public class TransactionRecord {
         return this.versionVector.compare(other.getVersionVector());
     }
 
-    public VersionVector mergeReplicas(TransactionRecord other) {
-        return this.versionVector.merged(other.getVersionVector());
+    public void mergeVersionVectorReplicas(TransactionRecord other) {
+        this.versionVector.merged(other.getVersionVector());
+    }
+
+    public List<CrdtInfo> getCrdtInfo() {
+        return this.crdtState.getCrdtInfo();
+    }
+
+    public void crdtAddOperationForAnnotation(Crdt operation, UUID annotationId) {
+        this.crdtState.addOperation(operation, annotationId);
+    }
+
+    public Set<Crdt> crdGetOperationsByAnnotationId(UUID annotationId) {
+        return this.crdtState.getOperations(annotationId);
+    }
+
+    public Map<UUID, Set<Crdt>> crdtGetAll(){
+        return this.crdtState.getAll();
     }
 }
