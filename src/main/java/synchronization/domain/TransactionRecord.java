@@ -22,7 +22,6 @@ public class TransactionRecord {
         this.versionVector = new VersionVector();
     }
 
-
     public TransactionRecord(Annotation annotation, UUID nodeId, VersionVector versionVector) {
         this.annotation = annotation;
         this.nodeIdFromIncomingMessage = nodeId;
@@ -118,12 +117,22 @@ public class TransactionRecord {
         return this.crdtState.getCrdtInfo();
     }
 
-    public void crdtAddOperationForAnnotation(Crdt operation, UUID annotationId) {
-        this.crdtState.addOperation(operation, annotationId);
+    public void crdtAddOperationForAnnotation(CrdtOperationType operation) {
+        UUID nodeId = NodeConfig.defaults().nodeId();
+        Set<Crdt> operations = crdGetOperationsByAnnotationId();
+
+        long nextCounter = operations.stream()
+                .filter(crdt -> crdt.getNodeId().equals(nodeId))
+                .mapToLong(Crdt::getCounter)
+                .max()
+                .orElse(0L) + 1;
+
+        Crdt crdt = new Crdt(operation, nextCounter, nodeId);
+        this.crdtState.addOperation(crdt, annotation.getId());
     }
 
-    public Set<Crdt> crdGetOperationsByAnnotationId(UUID annotationId) {
-        return this.crdtState.getOperations(annotationId);
+    public Set<Crdt> crdGetOperationsByAnnotationId() {
+        return this.crdtState.getOperations(this.annotation.getId());
     }
 
     public Map<UUID, Set<Crdt>> crdtGetAll(){

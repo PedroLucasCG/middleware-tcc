@@ -7,5 +7,6 @@ public record CrdtInfo(
     UUID operationId,
     CrdtOperationType type,
     long counter,
-    Instant timestamp) {
+    Instant timestamp,
+    UUID nodeId) {
 }

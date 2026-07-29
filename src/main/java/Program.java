@@ -1,5 +1,6 @@
 import synchronization.application.listener.Listener;
 import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.service.CrdtService;
 import synchronization.application.service.LwwService;
 import synchronization.application.service.SynchronizationService;
 import synchronization.application.infra.BroadcastController;
@@ -16,7 +17,7 @@ import java.util.*;
 public class Program {
     public static void main(String[] args) throws Exception {
         BroadcastController controller = new Controller(new DockerService());
-        SynchronizationService service = new VersionVectorService(controller, new TransactionRecordHashMapStore());
+        SynchronizationService service = new CrdtService(controller, new TransactionRecordHashMapStore());
         StrategyMiddleware middleware = new Listener(service);
         middleware.start();
 
