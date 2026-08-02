@@ -3,34 +3,31 @@ package synchronization.domain;
 import transport.domain.NodeConfig;
 
 import java.time.Instant;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class TransactionRecord {
     private UUID transactionId;
-    private Annotation annotation;
+    private TransactionContent transactionContent;
     private UUID nodeIdFromIncomingMessage;
     private VersionVector versionVector;
     private CrdtState crdtState;
 
-    public TransactionRecord(Annotation annotation, UUID nodeId) {
-        this.annotation = annotation;
+    public TransactionRecord(TransactionContent transactionContent, UUID nodeId) {
+        this.transactionContent = transactionContent;
         this.nodeIdFromIncomingMessage = nodeId;
         this.transactionId = UUID.randomUUID();
         this.versionVector = new VersionVector();
     }
 
-    public TransactionRecord(Annotation annotation, UUID nodeId, VersionVector versionVector) {
-        this.annotation = annotation;
+    public TransactionRecord(TransactionContent transactionContent, UUID nodeId, VersionVector versionVector) {
+        this.transactionContent = transactionContent;
         this.nodeIdFromIncomingMessage = nodeId;
         this.versionVector = versionVector;
         this.transactionId = UUID.randomUUID();
     }
 
-    public TransactionRecord(Annotation annotation, UUID nodeId, Map<UUID, Set<Crdt>> operations) {
-        this.annotation = annotation;
+    public TransactionRecord(TransactionContent transactionContent, UUID nodeId, Map<UUID, Set<Crdt>> operations) {
+        this.transactionContent = transactionContent;
         this.nodeIdFromIncomingMessage = nodeId;
         this.crdtState = new CrdtState(operations);
         this.transactionId = UUID.randomUUID();
@@ -40,20 +37,20 @@ public class TransactionRecord {
     // e deve ser comparada com uma anotação local de mesmo id se existir
     // posto por causa da serialização que precisa de um construtor mas não pode fazer a validação no banco de dados
     public TransactionRecord(String value, Boolean deleted, UUID nodeIdFromIncomingMessage, UUID annotationId) {
-        this.annotation = new Annotation(annotationId, value, deleted);
+        this.transactionContent = new TransactionContent(annotationId, value, deleted);
         this.nodeIdFromIncomingMessage = nodeIdFromIncomingMessage;
         this.transactionId = UUID.randomUUID();
     }
 
     public TransactionRecord(String value, Boolean deleted, UUID nodeIdFromIncomingMessage, UUID annotationId, VersionVector versionVector) {
-        this.annotation = new Annotation(annotationId, value, deleted);
+        this.transactionContent = new TransactionContent(annotationId, value, deleted);
         this.nodeIdFromIncomingMessage = nodeIdFromIncomingMessage;
         this.transactionId = UUID.randomUUID();
         this.versionVector = versionVector;
     }
 
     public TransactionRecord(String value, Boolean deleted, UUID nodeIdFromIncomingMessage, UUID annotationId, Map<UUID, Set<Crdt>> operations) {
-        this.annotation = new Annotation(annotationId, value, deleted);
+        this.transactionContent = new TransactionContent(annotationId, value, deleted);
         this.nodeIdFromIncomingMessage = nodeIdFromIncomingMessage;
         this.transactionId = UUID.randomUUID();
         this.crdtState = new  CrdtState(operations);
@@ -61,7 +58,7 @@ public class TransactionRecord {
 
     // caso a anotação não exista localmente este construtor a cria a partir da anotação vinda da rede
     public TransactionRecord(TransactionRecord incomingRecord) {
-        this.annotation = new Annotation(
+        this.transactionContent = new TransactionContent(
                 incomingRecord.getAnnotationId(),
                 incomingRecord.getMessage(),
                 incomingRecord.isDeleted());
@@ -78,7 +75,7 @@ public class TransactionRecord {
     }
 
     public UUID getAnnotationId() {
-        return annotation.getId();
+        return transactionContent.getId();
     }
 
     public UUID getTransactionId() {
@@ -86,7 +83,7 @@ public class TransactionRecord {
     }
 
     public Instant getUpdatedAt() {
-        return annotation.getUpdated();
+        return transactionContent.getUpdated();
     }
 
     public UUID getNodeId() {
@@ -94,11 +91,11 @@ public class TransactionRecord {
     }
 
     public String getMessage() {
-        return annotation.getValue();
+        return transactionContent.getValue();
     }
 
     public boolean isDeleted() {
-        return annotation.isDeleted();
+        return transactionContent.isDeleted();
     }
 
     public void upsertVersion() {
@@ -114,10 +111,10 @@ public class TransactionRecord {
     }
 
     public List<CrdtInfo> getCrdtInfo() {
-        return this.crdtState.getCrdtInfo();
+        return crdtState.getCrdtInfo();
     }
 
-    public void crdtAddOperationForAnnotation(CrdtOperationType operation) {
+    public void crdtAddOperationForAnnotation(CrdtOperationType operation, String currentContent) {
         UUID nodeId = NodeConfig.defaults().nodeId();
         Set<Crdt> operations = crdGetOperationsByAnnotationId();
 
@@ -127,15 +124,38 @@ public class TransactionRecord {
                 .max()
                 .orElse(0L) + 1;
 
-        Crdt crdt = new Crdt(operation, nextCounter, nodeId);
-        this.crdtState.addOperation(crdt, annotation.getId());
+        UUID targetOperationId = getOperationIdByIndex(transactionContent.getOperationStringIndex());
+
+        Crdt crdt = new Crdt(operation, nextCounter, nodeId, currentContent, targetOperationId);
+        crdtState.addOperation(crdt, transactionContent.getId());
+    }
+
+    public void mergeCrdtOperations(TransactionRecord incoming) {
+        crdtState.mergeOperations(incoming.crdtGetAll());
     }
 
     public Set<Crdt> crdGetOperationsByAnnotationId() {
-        return this.crdtState.getOperations(this.annotation.getId());
+        return this.crdtState.getOperations(this.transactionContent.getId());
     }
 
     public Map<UUID, Set<Crdt>> crdtGetAll(){
         return this.crdtState.getAll();
+    }
+
+    private UUID getOperationIdByIndex(long operationIndex) {
+
+        List<Crdt> orderedOperations = crdGetOperationsByAnnotationId()
+                .stream()
+                .sorted(
+                        Comparator
+                                .comparing(Crdt::getCounter)
+                                .thenComparing(Crdt::getNodeId)
+                )
+                .toList();
+
+
+        return orderedOperations
+                .get((int) operationIndex)
+                .getOperationId();
     }
 }

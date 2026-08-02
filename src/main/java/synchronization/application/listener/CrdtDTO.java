@@ -4,7 +4,6 @@ import shared.utils.StrategyDTOStringParser;
 import synchronization.domain.Crdt;
 import synchronization.domain.StrategyType;
 import synchronization.domain.TransactionRecord;
-import synchronization.domain.VersionVector;
 
 import java.time.Instant;
 import java.util.Map;
@@ -18,7 +17,7 @@ public class CrdtDTO implements StrategyDTO{
     private UUID nodeIdFromIncomingMessage;
     private Boolean deleted;
     private UUID transactionId;
-    private UUID annotationId;
+    private UUID transactionContentId;
     private Map<UUID, Set<Crdt>> operations;
 
     public CrdtDTO(TransactionRecord transactionRecord) {
@@ -28,7 +27,7 @@ public class CrdtDTO implements StrategyDTO{
         this.nodeIdFromIncomingMessage = transactionRecord.getNodeId();
         this.deleted = transactionRecord.isDeleted();
         this.transactionId = transactionRecord.getTransactionId();
-        this.annotationId = transactionRecord.getAnnotationId();
+        this.transactionContentId = transactionRecord.getAnnotationId();
     }
 
     public CrdtDTO(String[] parts) {
@@ -38,7 +37,7 @@ public class CrdtDTO implements StrategyDTO{
         this.nodeIdFromIncomingMessage = UUID.fromString(parts[3]);
         this.deleted = Boolean.parseBoolean(parts[4]);
         this.transactionId = UUID.fromString(parts[5]);
-        this.annotationId = UUID.fromString(parts[6]);
+        this.transactionContentId = UUID.fromString(parts[6]);
     }
 
     @Override
@@ -50,7 +49,7 @@ public class CrdtDTO implements StrategyDTO{
                 this.nodeIdFromIncomingMessage.toString(),
                 String.valueOf(deleted),
                 this.transactionId.toString(),
-                this.annotationId.toString(),
+                this.transactionContentId.toString(),
                 StrategyDTOStringParser.getCrdtSerializedOperations(operations)
         );
     }
@@ -61,7 +60,7 @@ public class CrdtDTO implements StrategyDTO{
                 this.message,
                 this.deleted,
                 this.nodeIdFromIncomingMessage,
-                this.annotationId,
+                this.transactionContentId,
                 this.operations
         );
     }

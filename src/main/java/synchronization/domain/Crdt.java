@@ -8,17 +8,23 @@ public class Crdt {
     private CrdtOperationType type;
     private long counter;
     private UUID nodeId;
+    private String content;
+    private UUID targetOperationId;
     private Instant timestamp;
 
     public Crdt(
             CrdtOperationType type,
             long counter,
-            UUID nodeId
+            UUID nodeId,
+            String content,
+            UUID targetOperationId
     ) {
         this.operationId = UUID.randomUUID();
         this.type = type;
         this.nodeId = nodeId;
         this.counter = counter;
+        this.content = content;
+        this.targetOperationId = targetOperationId;
         this.timestamp = Instant.now();
     }
 
@@ -72,5 +78,9 @@ public class Crdt {
 
     public CrdtOperationType getType() {
         return type;
+    }
+
+    public UUID  getOperationId() {
+        return operationId;
     }
 }

@@ -1,11 +1,9 @@
 import synchronization.application.listener.Listener;
 import synchronization.application.listener.StrategyMiddleware;
 import synchronization.application.service.CrdtService;
-import synchronization.application.service.LwwService;
 import synchronization.application.service.SynchronizationService;
 import synchronization.application.infra.BroadcastController;
-import synchronization.application.service.VersionVectorService;
-import synchronization.domain.Annotation;
+import synchronization.domain.TransactionContent;
 import transport.aplication.controller.Controller;
 import transport.aplication.service.DockerService;
 import synchronization.domain.TransactionRecord;
@@ -41,7 +39,7 @@ public class Program {
                 String message = messages[i][1];
                 String id =  messages[i][0];
                 middleware.createOrUpdate(new TransactionRecord(
-                        new Annotation(message, UUID.fromString(id)),
+                        new TransactionContent(message, UUID.fromString(id)),
                         NodeConfig.defaults().nodeId()
                 ));
             }

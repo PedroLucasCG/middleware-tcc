@@ -29,6 +29,22 @@ public class CrdtState {
         return operations;
     }
 
+    public void mergeOperations(
+            Map<UUID, Set<Crdt>> incoming
+    ) {
+
+        operations.forEach((annotationId, operations) -> {
+
+            incoming.computeIfAbsent(
+                    annotationId,
+                    id -> new HashSet<>()
+            );
+
+            incoming.get(annotationId)
+                    .addAll(operations);
+        });
+    }
+
     public List<CrdtInfo> getCrdtInfo(){
         return operations
                 .values()

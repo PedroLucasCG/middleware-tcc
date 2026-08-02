@@ -1,7 +1,7 @@
 package synchronization.domain;
 
 public enum CrdtOperationType {
-    CREATE,
+    INSERT,
     UPDATE,
     DELETE
 }

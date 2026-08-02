@@ -4,14 +4,12 @@ import shared.utils.ByteMessageHandler;
 import synchronization.application.infra.BroadcastController;
 import synchronization.application.infra.RecordStore;
 import synchronization.application.listener.CrdtDTO;
-import synchronization.application.listener.LwwDTO;
-import synchronization.application.listener.StrategyDTO;
 import synchronization.application.listener.StrategyMiddleware;
-import synchronization.domain.Crdt;
 import synchronization.domain.CrdtOperationType;
 import synchronization.domain.TransactionRecord;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -26,7 +24,12 @@ public class CrdtService implements SynchronizationService {
 
     @Override
     public void upsertMessage(TransactionRecord transactionRecord) {
-        transactionRecord.crdtAddOperationForAnnotation(CrdtOperationType.CREATE);
+        List<TransactionRecord> records = recordStore
+                .getTransactionRecordsByTransactionContentId(transactionRecord.getAnnotationId())
+                .get();
+
+        String currentContent = records.get(records.size() - 1).getMessage();
+        transactionRecord.crdtAddOperationForAnnotation(CrdtOperationType.INSERT, currentContent);
         var data = new CrdtDTO(transactionRecord);
         controller.broadcast(
                 ByteMessageHandler.serialize(data)

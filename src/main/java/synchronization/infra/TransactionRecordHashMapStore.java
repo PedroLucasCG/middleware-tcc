@@ -6,6 +6,7 @@ import synchronization.domain.TransactionRecord;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class TransactionRecordHashMapStore implements RecordStore {
     private final Map<UUID, TransactionRecord> records = new ConcurrentHashMap<>();
@@ -25,13 +26,13 @@ public class TransactionRecordHashMapStore implements RecordStore {
     }
 
     @Override
-    public Optional<TransactionRecord> getTransactionRecordByAnnotationId(UUID annotationId) {
-        for (TransactionRecord transactionRecord : records.values()) {
-            if (transactionRecord.getAnnotationId().equals(annotationId)) {
-                return Optional.of(transactionRecord);
-            }
-        }
-        return Optional.empty();
+    public Optional<List<TransactionRecord>> getTransactionRecordsByTransactionContentId(UUID annotationId) {
+        return Optional.of(records.values()
+                .stream()
+                .filter(record ->
+                        record.getAnnotationId().equals(annotationId)
+                )
+                .collect(Collectors.<TransactionRecord>toList()));
     }
 
     @Override

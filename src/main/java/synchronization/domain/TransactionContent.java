@@ -3,17 +3,18 @@ package synchronization.domain;
 import java.time.Instant;
 import java.util.UUID;
 
-public class Annotation {
+public class TransactionContent {
     private UUID id;
     private String value;
     private boolean deleted;
+    private Long operationStringIndex;
     private Instant created;
     private Instant updated;
 
-    public Annotation() {
+    public TransactionContent() {
     }
 
-    public Annotation(String value) {
+    public TransactionContent(String value) {
         this.id = UUID.randomUUID();
         this.value = value;
         this.deleted = false;
@@ -21,7 +22,7 @@ public class Annotation {
         this.updated = Instant.now();
     }
 
-    public Annotation(String value, UUID id) {
+    public TransactionContent(String value, UUID id) {
         this.id = id;
         this.value = value;
         this.deleted = false;
@@ -29,7 +30,16 @@ public class Annotation {
         this.updated = Instant.now();
     }
 
-    public Annotation(UUID id, String value, Boolean deleted) {
+    public TransactionContent(String value, UUID id, Long operationStringIndex) {
+        this.id = id;
+        this.value = value;
+        this.deleted = false;
+        this.operationStringIndex = operationStringIndex;
+        this.created = Instant.now();
+        this.updated = Instant.now();
+    }
+
+    public TransactionContent(UUID id, String value, Boolean deleted) {
         this.value = value;
         this.deleted = deleted;
         this.id = id;
@@ -43,6 +53,10 @@ public class Annotation {
 
     public UUID getId() {
         return id;
+    }
+
+    public Long  getOperationStringIndex() {
+        return operationStringIndex;
     }
 
     public boolean isDeleted() {
