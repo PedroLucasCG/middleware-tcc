@@ -30,19 +30,19 @@ public class TransactionContent {
         this.updated = Instant.now();
     }
 
-    public TransactionContent(String value, UUID id, Long operationStringIndex) {
-        this.id = id;
-        this.value = value;
-        this.deleted = false;
-        this.operationStringIndex = operationStringIndex;
-        this.created = Instant.now();
-        this.updated = Instant.now();
-    }
-
     public TransactionContent(UUID id, String value, Boolean deleted) {
         this.value = value;
         this.deleted = deleted;
         this.id = id;
+        this.created = Instant.now();
+        this.updated = Instant.now();
+    }
+
+    public TransactionContent(UUID id, String value, Boolean deleted, Long operationStringIndex) {
+        this.value = value;
+        this.deleted = deleted;
+        this.id = id;
+        this.operationStringIndex = operationStringIndex;
         this.created = Instant.now();
         this.updated = Instant.now();
     }

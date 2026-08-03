@@ -49,7 +49,27 @@ public class TransactionRecord {
         this.versionVector = versionVector;
     }
 
-    public TransactionRecord(String value, Boolean deleted, UUID nodeIdFromIncomingMessage, UUID annotationId, Map<UUID, Set<Crdt>> operations) {
+    public TransactionRecord(
+            String value,
+            Boolean deleted,
+            UUID nodeIdFromIncomingMessage,
+            UUID annotationId,
+            Map<UUID,
+            Set<Crdt>> operations,
+            Long operationStringIndex) {
+        this.transactionContent = new TransactionContent(annotationId, value, deleted, operationStringIndex);
+        this.nodeIdFromIncomingMessage = nodeIdFromIncomingMessage;
+        this.transactionId = UUID.randomUUID();
+        this.crdtState = new  CrdtState(operations);
+    }
+
+    public TransactionRecord(
+            String value,
+            Boolean deleted,
+            UUID nodeIdFromIncomingMessage,
+            UUID annotationId,
+            Map<UUID,
+            Set<Crdt>> operations) {
         this.transactionContent = new TransactionContent(annotationId, value, deleted);
         this.nodeIdFromIncomingMessage = nodeIdFromIncomingMessage;
         this.transactionId = UUID.randomUUID();
@@ -114,7 +134,7 @@ public class TransactionRecord {
         return crdtState.getCrdtInfo();
     }
 
-    public void crdtAddOperationForAnnotation(CrdtOperationType operation, String currentContent) {
+    public void crdtAddOperationForAnnotation(CrdtOperationType operation) {
         UUID nodeId = NodeConfig.defaults().nodeId();
         Set<Crdt> operations = crdGetOperationsByAnnotationId();
 
@@ -126,7 +146,7 @@ public class TransactionRecord {
 
         UUID targetOperationId = getOperationIdByIndex(transactionContent.getOperationStringIndex());
 
-        Crdt crdt = new Crdt(operation, nextCounter, nodeId, currentContent, targetOperationId);
+        Crdt crdt = new Crdt(operation, nextCounter, nodeId, transactionContent.getValue(), targetOperationId);
         crdtState.addOperation(crdt, transactionContent.getId());
     }
 
@@ -142,20 +162,38 @@ public class TransactionRecord {
         return this.crdtState.getAll();
     }
 
-    private UUID getOperationIdByIndex(long operationIndex) {
+    public Long getOperationStringIndex() {
+        return transactionContent.getOperationStringIndex();
+    }
 
-        List<Crdt> orderedOperations = crdGetOperationsByAnnotationId()
+    private UUID getOperationIdByIndex(long insertionIndex) {
+        if (insertionIndex <= 0) {
+            return null;
+        }
+
+        List<Crdt> visibleOperations = crdGetOperationsByAnnotationId()
                 .stream()
+                .filter(operation ->
+                        operation.getType() == CrdtOperationType.INSERT)
                 .sorted(
-                        Comparator
-                                .comparing(Crdt::getCounter)
+                        Comparator.comparingLong(Crdt::getCounter)
                                 .thenComparing(Crdt::getNodeId)
+                                .thenComparing(Crdt::getOperationId)
                 )
                 .toList();
 
+        int predecessorIndex = (int) insertionIndex - 1;
 
-        return orderedOperations
-                .get((int) operationIndex)
+        if (predecessorIndex >= visibleOperations.size()) {
+            throw new IndexOutOfBoundsException(
+                    "Insertion index " + insertionIndex +
+                            " is invalid for a document with " +
+                            visibleOperations.size() + " operations"
+            );
+        }
+
+        return visibleOperations
+                .get(predecessorIndex)
                 .getOperationId();
     }
 }

@@ -24,12 +24,7 @@ public class CrdtService implements SynchronizationService {
 
     @Override
     public void upsertMessage(TransactionRecord transactionRecord) {
-        List<TransactionRecord> records = recordStore
-                .getTransactionRecordsByTransactionContentId(transactionRecord.getAnnotationId())
-                .get();
-
-        String currentContent = records.get(records.size() - 1).getMessage();
-        transactionRecord.crdtAddOperationForAnnotation(CrdtOperationType.INSERT, currentContent);
+        transactionRecord.crdtAddOperationForAnnotation(CrdtOperationType.INSERT);
         var data = new CrdtDTO(transactionRecord);
         controller.broadcast(
                 ByteMessageHandler.serialize(data)

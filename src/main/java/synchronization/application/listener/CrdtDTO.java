@@ -18,6 +18,7 @@ public class CrdtDTO implements StrategyDTO{
     private Boolean deleted;
     private UUID transactionId;
     private UUID transactionContentId;
+    private Long operationStringIndex;
     private Map<UUID, Set<Crdt>> operations;
 
     public CrdtDTO(TransactionRecord transactionRecord) {
@@ -27,6 +28,7 @@ public class CrdtDTO implements StrategyDTO{
         this.nodeIdFromIncomingMessage = transactionRecord.getNodeId();
         this.deleted = transactionRecord.isDeleted();
         this.transactionId = transactionRecord.getTransactionId();
+        this.operationStringIndex = transactionRecord.getOperationStringIndex();
         this.transactionContentId = transactionRecord.getAnnotationId();
     }
 
@@ -38,6 +40,7 @@ public class CrdtDTO implements StrategyDTO{
         this.deleted = Boolean.parseBoolean(parts[4]);
         this.transactionId = UUID.fromString(parts[5]);
         this.transactionContentId = UUID.fromString(parts[6]);
+        this.operationStringIndex = Long.valueOf(parts[7]);
     }
 
     @Override
@@ -50,7 +53,8 @@ public class CrdtDTO implements StrategyDTO{
                 String.valueOf(deleted),
                 this.transactionId.toString(),
                 this.transactionContentId.toString(),
-                StrategyDTOStringParser.getCrdtSerializedOperations(operations)
+                StrategyDTOStringParser.getCrdtSerializedOperations(operations),
+                this.operationStringIndex.toString()
         );
     }
 
@@ -61,7 +65,8 @@ public class CrdtDTO implements StrategyDTO{
                 this.deleted,
                 this.nodeIdFromIncomingMessage,
                 this.transactionContentId,
-                this.operations
+                this.operations,
+                this.operationStringIndex
         );
     }
 }
