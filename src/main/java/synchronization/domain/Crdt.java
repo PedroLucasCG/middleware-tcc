@@ -80,7 +80,16 @@ public class Crdt {
         return type;
     }
 
-    public UUID  getOperationId() {
+    public UUID getOperationId() {
         return operationId;
     }
+
+    public  UUID getTargetOperationId() {
+        return targetOperationId;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
 }

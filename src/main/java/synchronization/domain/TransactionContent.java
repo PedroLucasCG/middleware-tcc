@@ -60,8 +60,14 @@ public class TransactionContent {
     }
 
     public boolean isDeleted() {
-        this.updated = Instant.now();
         return deleted;
+    }
+
+    public void deleteMessage() {
+        if (!deleted) {
+            deleted = true;
+            updated = Instant.now();
+        }
     }
 
     public Instant getCreated() {
@@ -70,10 +76,5 @@ public class TransactionContent {
 
     public Instant getUpdated() {
         return this.updated == null ? this.created : this.updated;
-    }
-
-    public void deleteMessage() {
-        this.deleted = true;
-        this.updated = Instant.now();
     }
 }
