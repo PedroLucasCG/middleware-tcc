@@ -17,6 +17,7 @@ public class TransactionRecord {
         this.nodeIdFromIncomingMessage = nodeId;
         this.transactionId = UUID.randomUUID();
         this.versionVector = new VersionVector();
+        this.crdtState = new CrdtState(new HashMap<>());
     }
 
     public TransactionRecord(TransactionContent transactionContent, UUID nodeId, VersionVector versionVector) {

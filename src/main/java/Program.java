@@ -39,7 +39,7 @@ public class Program {
                 String message = messages[i][1];
                 String id =  messages[i][0];
                 middleware.createOrUpdate(new TransactionRecord(
-                        new TransactionContent(message, UUID.fromString(id)),
+                        new TransactionContent(UUID.fromString(id), message, false, 0L),
                         NodeConfig.defaults().nodeId()
                 ));
             }

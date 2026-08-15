@@ -6,6 +6,7 @@ import synchronization.domain.StrategyType;
 import synchronization.domain.TransactionRecord;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -30,6 +31,7 @@ public class CrdtDTO implements StrategyDTO{
         this.transactionId = transactionRecord.getTransactionId();
         this.operationStringIndex = transactionRecord.getOperationStringIndex();
         this.transactionContentId = transactionRecord.getAnnotationId();
+        this.operations = transactionRecord.crdtGetAll();
     }
 
     public CrdtDTO(String[] parts) {
@@ -40,7 +42,8 @@ public class CrdtDTO implements StrategyDTO{
         this.deleted = Boolean.parseBoolean(parts[4]);
         this.transactionId = UUID.fromString(parts[5]);
         this.transactionContentId = UUID.fromString(parts[6]);
-        this.operationStringIndex = Long.valueOf(parts[7]);
+        this.operations = StrategyDTOStringParser.crdtDeserializeOperations(parts[7]);
+        this.operationStringIndex = Long.valueOf(parts[8]);
     }
 
     @Override
