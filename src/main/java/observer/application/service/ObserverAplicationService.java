@@ -1,24 +1,24 @@
 package observer.application.service;
 
-import observer.domain.WsEvent;
-import observer.infra.WsInfraSender;
+import observer.domain.EventState;
+import observer.infra.EventSender;
 import synchronization.application.listener.StrategyDTO;
 
 public class ObserverAplicationService implements ObserverService {
-    private WsInfraSender wsInfraSender;
+    private EventSender eventSender;
 
-    public ObserverAplicationService(WsInfraSender wsInfraSender) {
-        this.wsInfraSender = wsInfraSender;
+    public ObserverAplicationService(EventSender eventSender) {
+        this.eventSender = eventSender;
     }
 
     @Override
     public void connect() {
-        wsInfraSender.connect();
+        eventSender.connect();
     }
 
     @Override
-    public void publish(WsEvent event, StrategyDTO strategyDTO) {
-        wsInfraSender.publish(event, strategyDTO);
+    public void publish(EventState event, StrategyDTO strategyDTO) {
+        eventSender.publish(event, strategyDTO);
     }
 
     @Override

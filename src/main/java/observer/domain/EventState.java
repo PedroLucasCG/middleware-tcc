@@ -1,6 +1,6 @@
 package observer.domain;
 
-public enum WsEvent {
+public enum EventState {
     SENT,
     RECEIVED,
     CONNECTED,

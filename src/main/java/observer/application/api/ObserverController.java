@@ -1,7 +1,7 @@
 package observer.application.api;
 
 import observer.application.service.ObserverService;
-import observer.domain.WsEvent;
+import observer.domain.EventState;
 import synchronization.application.listener.StrategyDTO;
 
 public class ObserverController implements ObserverAPI {
@@ -17,7 +17,7 @@ public class ObserverController implements ObserverAPI {
     }
 
     @Override
-    public void publish(WsEvent event, StrategyDTO strategyDTO) {
+    public void publish(EventState event, StrategyDTO strategyDTO) {
         observerService.publish(event, strategyDTO);
     }
 

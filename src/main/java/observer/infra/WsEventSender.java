@@ -1,7 +1,7 @@
 package observer.infra;
 
 import observer.domain.Observer;
-import observer.domain.WsEvent;
+import observer.domain.EventState;
 import synchronization.application.listener.DummyDTO;
 import synchronization.application.listener.StrategyDTO;
 
@@ -13,13 +13,13 @@ import java.util.Queue;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class WsInfraSenderImpl implements WsInfraSender {
+public class WsEventSender implements EventSender {
     private final Queue<String> pendingMessages;
     private WebSocket webSocket;
     private boolean connected;
     private Observer observer;
 
-    public WsInfraSenderImpl(Observer observer) {
+    public WsEventSender(Observer observer) {
         this.pendingMessages = new ConcurrentLinkedQueue<>();
         this.observer = observer;
     }
@@ -33,7 +33,7 @@ public class WsInfraSenderImpl implements WsInfraSender {
                     this.webSocket = socket;
                     this.connected = true;
 
-                    publish(WsEvent.CONNECTED, new DummyDTO());
+                    publish(EventState.CONNECTED, new DummyDTO());
 
                     flushPendingMessages();
                 })
@@ -44,7 +44,7 @@ public class WsInfraSenderImpl implements WsInfraSender {
     }
 
     @Override
-    public void publish(WsEvent wsEvent, StrategyDTO dto) {
+    public void publish(EventState eventState, StrategyDTO dto) {
         try {
 
             String message = """
@@ -57,7 +57,7 @@ public class WsInfraSenderImpl implements WsInfraSender {
                 """.formatted(
                     jsonString(Instant.now().toString()),
                     jsonString(observer.getPeerName()),
-                    jsonString(wsEvent.name()),
+                    jsonString(eventState.name()),
                     jsonString(dto.toString())
             );
 

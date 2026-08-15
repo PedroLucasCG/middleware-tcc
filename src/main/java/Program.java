@@ -3,8 +3,8 @@ import observer.application.api.ObserverController;
 import observer.application.service.ObserverAplicationService;
 import observer.application.service.ObserverService;
 import observer.domain.Observer;
-import observer.infra.WsInfraSender;
-import observer.infra.WsInfraSenderImpl;
+import observer.infra.EventSender;
+import observer.infra.WsEventSender;
 import synchronization.application.listener.Listener;
 import synchronization.application.listener.StrategyMiddleware;
 import synchronization.application.service.CrdtService;
@@ -24,8 +24,8 @@ public class Program {
         BroadcastController controller = new Controller(new DockerService());
         SynchronizationService service = new CrdtService(controller, new TransactionRecordHashMapStore());
 
-        WsInfraSender wsInfraSender = new WsInfraSenderImpl(new Observer());
-        ObserverService observerService = new ObserverAplicationService(wsInfraSender);
+        EventSender eventSender = new WsEventSender(new Observer());
+        ObserverService observerService = new ObserverAplicationService(eventSender);
         ObserverAPI observerAPI = new ObserverController(observerService);
 
         StrategyMiddleware middleware = new Listener(service, observerAPI);
