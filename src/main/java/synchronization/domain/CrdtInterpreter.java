@@ -5,10 +5,6 @@ import java.util.stream.Collectors;
 
 public class CrdtInterpreter {
 
-    /*
-     * Provides the same deterministic ordering on every replica when
-     * multiple INSERT operations reference the same predecessor.
-     */
     private static final Comparator<Crdt> OPERATION_ORDER =
             Comparator.comparingLong(Crdt::getCounter)
                     .thenComparing(Crdt::getNodeId)
@@ -30,9 +26,6 @@ public class CrdtInterpreter {
         );
     }
 
-    /**
-     * Reconstructs the visible text represented by a set of CRDT operations.
-     */
     public String interpretOperations(Set<Crdt> operations) {
         if (operations == null || operations.isEmpty()) {
             return "";
@@ -61,13 +54,6 @@ public class CrdtInterpreter {
         return result.toString();
     }
 
-    /**
-     * Returns the INSERT operation corresponding to every currently visible
-     * character or fragment, in interpreted string order.
-     *
-     * This is useful when an operationStringIndex must be converted into an
-     * operation ID for a DELETE operation.
-     */
     public List<Crdt> getVisibleInsertOperations(
             TransactionRecord transactionRecord
     ) {
@@ -101,9 +87,6 @@ public class CrdtInterpreter {
         return visibleOperations;
     }
 
-    /**
-     * Each DELETE points to the operationId of an earlier INSERT.
-     */
     private Set<UUID> findDeletedInsertIds(Set<Crdt> operations) {
         return operations.stream()
                 .filter(Objects::nonNull)
@@ -115,11 +98,6 @@ public class CrdtInterpreter {
                 .collect(Collectors.toSet());
     }
 
-    /**
-     * Groups every INSERT by the INSERT that precedes it.
-     *
-     * A null target means insertion at the beginning of the annotation.
-     */
     private Map<UUID, List<Crdt>> groupInsertionsByTarget(
             Set<Crdt> operations
     ) {
@@ -144,9 +122,6 @@ public class CrdtInterpreter {
         return childrenByTarget;
     }
 
-    /**
-     * Traverses the operation graph and appends only visible insertions.
-     */
     private void appendOperations(
             UUID targetOperationId,
             Map<UUID, List<Crdt>> childrenByTarget,
@@ -162,18 +137,10 @@ public class CrdtInterpreter {
         for (Crdt operation : children) {
             UUID operationId = operation.getOperationId();
 
-            /*
-             * Avoid duplicate processing and protect against malformed
-             * operation cycles.
-             */
             if (operationId == null || !visited.add(operationId)) {
                 continue;
             }
 
-            /*
-             * A deleted insertion stays in the graph but its value is not
-             * included in the visible result.
-             */
             if (!deletedInsertIds.contains(operationId)) {
                 String value = operation.getContent();
 
@@ -182,10 +149,6 @@ public class CrdtInterpreter {
                 }
             }
 
-            /*
-             * Always visit children, including children of deleted inserts.
-             * The deleted insert acts as a structural tombstone.
-             */
             appendOperations(
                     operationId,
                     childrenByTarget,
@@ -196,10 +159,6 @@ public class CrdtInterpreter {
         }
     }
 
-    /**
-     * Performs the same traversal but returns the visible INSERT objects
-     * instead of constructing a string.
-     */
     private void collectVisibleOperations(
             UUID targetOperationId,
             Map<UUID, List<Crdt>> childrenByTarget,

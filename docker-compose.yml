@@ -4,27 +4,36 @@ services:
     container_name: peer-a
     networks:
       - p2p-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - PEER_NAME=peer-a
       - SENDER=true
+      - OBSERVER_WS_URL=ws://host.docker.internal:8080/ws/ingest
 
   peer-b:
     build: .
     container_name: peer-b
     networks:
       - p2p-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-        - PEER_NAME=peer-b
-        - SENDER=false
+      - PEER_NAME=peer-b
+      - SENDER=false
+      - OBSERVER_WS_URL=ws://host.docker.internal:8080/ws/ingest
 
   peer-c:
     build: .
     container_name: peer-c
     networks:
       - p2p-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - PEER_NAME=peer-c
       - SENDER=false
+      - OBSERVER_WS_URL=ws://host.docker.internal:8080/ws/ingest
 
 networks:
   p2p-net:

@@ -1,5 +1,6 @@
 package synchronization.application.listener;
 
+import observer.application.api.ObserverAPI;
 import synchronization.application.service.SynchronizationService;
 import synchronization.domain.TransactionRecord;
 import transport.domain.NodeConfig;
@@ -9,9 +10,11 @@ import java.time.Instant;
 
 public class Listener implements StrategyMiddleware {
     private final SynchronizationService synchronizationService;
+    private final ObserverAPI observerAPI;
 
-    public Listener(SynchronizationService synchronizationService) {
+    public Listener(SynchronizationService synchronizationService, ObserverAPI observerAPI) {
         this.synchronizationService = synchronizationService;
+        this.observerAPI = observerAPI;
     }
 
     @Override

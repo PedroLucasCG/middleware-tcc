@@ -31,6 +31,8 @@ public interface StrategyDTO {
             case VERSION_VECTOR -> new VersionVectorDTO(parts);
 
             case CRDT -> new CrdtDTO(parts);
+
+            case Dummy -> new DummyDTO();
         };
     }
 }

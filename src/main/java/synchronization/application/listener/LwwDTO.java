@@ -2,6 +2,7 @@ package synchronization.application.listener;
 
 import synchronization.domain.StrategyType;
 import synchronization.domain.TransactionRecord;
+import transport.domain.NodeConfig;
 
 import java.time.Instant;
 import java.util.UUID;

@@ -1,3 +1,10 @@
+import observer.application.api.ObserverAPI;
+import observer.application.api.ObserverController;
+import observer.application.service.ObserverAplicationService;
+import observer.application.service.ObserverService;
+import observer.domain.Observer;
+import observer.infra.WsInfraSender;
+import observer.infra.WsInfraSenderImpl;
 import synchronization.application.listener.Listener;
 import synchronization.application.listener.StrategyMiddleware;
 import synchronization.application.service.CrdtService;
@@ -16,7 +23,12 @@ public class Program {
     public static void main(String[] args) throws Exception {
         BroadcastController controller = new Controller(new DockerService());
         SynchronizationService service = new CrdtService(controller, new TransactionRecordHashMapStore());
-        StrategyMiddleware middleware = new Listener(service);
+
+        WsInfraSender wsInfraSender = new WsInfraSenderImpl(new Observer());
+        ObserverService observerService = new ObserverAplicationService(wsInfraSender);
+        ObserverAPI observerAPI = new ObserverController(observerService);
+
+        StrategyMiddleware middleware = new Listener(service, observerAPI);
         middleware.start();
 
         //teste
