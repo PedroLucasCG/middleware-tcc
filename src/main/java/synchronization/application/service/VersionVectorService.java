@@ -3,6 +3,7 @@ package synchronization.application.service;
 import shared.utils.ByteMessageHandler;
 import synchronization.application.infra.BroadcastController;
 import synchronization.application.infra.RecordStore;
+import synchronization.application.listener.StrategyDTO;
 import synchronization.application.listener.StrategyMiddleware;
 import synchronization.application.listener.VersionVectorDTO;
 import synchronization.domain.TransactionRecord;
@@ -21,34 +22,24 @@ public class VersionVectorService implements SynchronizationService {
     }
 
     @Override
-    public void upsertMessage(TransactionRecord transactionRecord) {
+    public StrategyDTO upsertMessage(TransactionRecord transactionRecord) {
         transactionRecord.upsertVersion();
         var data = new VersionVectorDTO(transactionRecord);
         controller.broadcast(
                 ByteMessageHandler.serialize(data)
         );
-        System.out.println(
-                "SENDING id=" + transactionRecord.getAnnotationId() +
-                        " value=" + transactionRecord.getMessage() +
-                        " time=" + transactionRecord.getUpdatedAt()
-        );
         recordStore.addTransactionRecord(transactionRecord);
+
+        return data;
     }
 
     @Override
-    public TransactionRecord readMessage(String peerId, byte[] payload) {
+    public StrategyDTO readMessage(String peerId, byte[] payload) {
         String value = new String(payload, StandardCharsets.UTF_8);
-        TransactionRecord incomingRecord = ByteMessageHandler.deserialize(value);
-
-        snapshot().forEach((id, record) -> {
-            System.out.println(
-                    "SNAPSHOT id=" + id +
-                            " value=" + record.getMessage() +
-                            " time=" + record.getUpdatedAt()
-            );
-        });
-
-        return recordStore.mergeIncomingRecord(incomingRecord, new VersionVectorConflictResolver());
+        StrategyDTO incomingDto = ByteMessageHandler.deserialize(value);
+        TransactionRecord incomingRecord = incomingDto.makeTransactionRecordFromDto();
+        recordStore.mergeIncomingRecord(incomingRecord, new VersionVectorConflictResolver());
+        return incomingDto;
     }
 
     @Override

@@ -18,6 +18,7 @@ public class ObserverController implements ObserverAPI {
 
     @Override
     public void publish(EventState event, StrategyDTO strategyDTO) {
+        System.out.println(event + " "  + strategyDTO.toString());
         observerService.publish(event, strategyDTO);
     }
 

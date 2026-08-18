@@ -8,9 +8,9 @@ public class ByteMessageHandler {
         return dto.toString();
     }
 
-    public static TransactionRecord deserialize(String raw) {
+    public static StrategyDTO deserialize(String raw) {
         String[] parts = raw.split("\\|", -1);
         StrategyDTO strategyDTO = StrategyDTO.makeStrategyDTO(parts);
-        return strategyDTO.makeTransactionRecordFromDto();
+        return strategyDTO;
     }
 }

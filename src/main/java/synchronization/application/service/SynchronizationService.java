@@ -1,10 +1,11 @@
 package synchronization.application.service;
 
+import synchronization.application.listener.StrategyDTO;
 import synchronization.application.listener.StrategyMiddleware;
 import synchronization.domain.TransactionRecord;
 
 public interface SynchronizationService {
-    void upsertMessage(TransactionRecord transactionRecord);
-    TransactionRecord readMessage(String peerId, byte[] payload);
+    StrategyDTO upsertMessage(TransactionRecord transactionRecord);
+    StrategyDTO readMessage(String peerId, byte[] payload);
     void start(StrategyMiddleware listener);
 }

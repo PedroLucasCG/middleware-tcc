@@ -18,6 +18,12 @@ public class DummyDTO implements StrategyDTO{
         this.lastUpdate = Instant.now();
     }
 
+    public DummyDTO(String message) {
+        this.typeDTO = StrategyType.Dummy;
+        this.message = message;
+        this.lastUpdate = Instant.now();
+    }
+
     @Override
     public TransactionRecord makeTransactionRecordFromDto() {
         return null;

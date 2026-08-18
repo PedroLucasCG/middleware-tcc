@@ -1,6 +1,7 @@
 package synchronization.application.listener;
 
 import observer.application.api.ObserverAPI;
+import observer.domain.EventState;
 import synchronization.application.service.SynchronizationService;
 import synchronization.domain.TransactionRecord;
 import transport.domain.NodeConfig;
@@ -20,12 +21,13 @@ public class Listener implements StrategyMiddleware {
     @Override
     public void start() {
         synchronizationService.start(this);
+        observerAPI.connect();
     }
 
     @Override
     public void createOrUpdate(TransactionRecord transactionRecord) {
-        synchronizationService.upsertMessage(transactionRecord);
-        logEvent("MESSAGE_SENT", "ALL", transactionRecord.getMessage());
+        StrategyDTO strategyDTO = synchronizationService.upsertMessage(transactionRecord);
+        logEvent(EventState.SENT, strategyDTO);
     }
 
     @Override
@@ -40,7 +42,7 @@ public class Listener implements StrategyMiddleware {
 
     @Override
     public void onPeerDiscovered(PeerInfo peer) {
-        logEvent("PEER_DISCOVERED", peer.id().toString(), peer.address());
+        logEvent(EventState.RECEIVED, new DummyDTO("Peer discovered: " + peer.address()));
     }
 
     @Override
@@ -50,19 +52,11 @@ public class Listener implements StrategyMiddleware {
 
     @Override
     public void onMessageReceived(String peerId, byte[] payload) {
-        TransactionRecord transactionRecord = synchronizationService.readMessage(peerId, payload);
-
-        logEvent("MESSAGE_RECEIVED", peerId, transactionRecord.getMessage());
+        StrategyDTO dto = synchronizationService.readMessage(peerId, payload);
+        logEvent(EventState.RECEIVED, dto);
     }
 
-    public void logEvent(String event, String target, String message) {
-        System.out.printf(
-                "{\"time\":\"%s\",\"peer\":\"%s\",\"event\":\"%s\",\"target\":\"%s\",\"message\":\"%s\"}%n",
-                Instant.now(),
-                NodeConfig.defaults().nodeId(),
-                event,
-                target,
-                message
-        );
+    public void logEvent(EventState event, StrategyDTO dto) {
+        observerAPI.publish(event, dto);
     }
 }
