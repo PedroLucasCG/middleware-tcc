@@ -1,0 +1,5 @@
+5000  | peer-a | conversation-1 | oi           | false
+10000 | peer-b | conversation-2 | olá          | false
+15000 | peer-c | conversation-1 | oi de volta  | false
+20000 | peer-a | conversation-2 | mensagem A   | false
+20000 | peer-b | conversation-2 | mensagem B   | false
