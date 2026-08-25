@@ -13,7 +13,7 @@ import java.util.Queue;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class WsEventSender implements EventSender {
+public class WsEventSender implements EventSender, WebSocket.Listener  {
     private final Queue<String> pendingMessages;
     private WebSocket webSocket;
     private boolean connected;

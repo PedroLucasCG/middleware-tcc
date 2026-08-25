@@ -5,7 +5,7 @@ import observer.infra.EventSender;
 import synchronization.application.listener.StrategyDTO;
 
 public class ObserverAplicationService implements ObserverService {
-    private EventSender eventSender;
+    private final EventSender eventSender;
 
     public ObserverAplicationService(EventSender eventSender) {
         this.eventSender = eventSender;
