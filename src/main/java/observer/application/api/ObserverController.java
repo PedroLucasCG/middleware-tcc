@@ -5,7 +5,7 @@ import observer.domain.EventState;
 import synchronization.application.listener.StrategyDTO;
 
 public class ObserverController implements ObserverAPI {
-    private ObserverService observerService;
+    private final ObserverService observerService;
 
     public ObserverController(ObserverService observerService) {
         this.observerService = observerService;
@@ -18,7 +18,6 @@ public class ObserverController implements ObserverAPI {
 
     @Override
     public void publish(EventState event, StrategyDTO strategyDTO) {
-        System.out.println(event + " "  + strategyDTO.toString());
         observerService.publish(event, strategyDTO);
     }
 

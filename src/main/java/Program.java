@@ -22,11 +22,11 @@ public class Program {
         String peerName = System.getenv("PEER_NAME");
 
         if (pathToScenarioFile == null) {
-            throw  new RuntimeException("PATH_SCENARIO_FILE environment variable is not set");
+            throw new RuntimeException("PATH_SCENARIO_FILE environment variable is not set");
         }
 
         if (peerName == null) {
-            throw  new RuntimeException("PEER_NAME environment variable is not set");
+            throw new RuntimeException("PEER_NAME environment variable is not set");
         }
 
         List<ScenarioSingleAction> scenarioSingleActionList = ScenarioFileLoader.loadFile(pathToScenarioFile);
