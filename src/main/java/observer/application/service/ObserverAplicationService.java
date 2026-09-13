@@ -2,7 +2,7 @@ package observer.application.service;
 
 import observer.domain.EventState;
 import observer.infra.EventSender;
-import synchronization.application.listener.StrategyDTO;
+import synchronization.application.api.StrategyDTO;
 
 public class ObserverAplicationService implements ObserverService {
     private final EventSender eventSender;

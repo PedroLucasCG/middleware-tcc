@@ -1,7 +1,7 @@
 package synchronization.application.service;
 
-import synchronization.application.listener.StrategyDTO;
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.StrategyDTO;
+import synchronization.application.api.StrategyMiddleware;
 import synchronization.domain.TransactionRecord;
 
 public interface SynchronizationService {

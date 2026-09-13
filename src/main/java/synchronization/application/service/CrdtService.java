@@ -3,14 +3,13 @@ package synchronization.application.service;
 import shared.utils.ByteMessageHandler;
 import synchronization.application.infra.BroadcastController;
 import synchronization.application.infra.RecordStore;
-import synchronization.application.listener.CrdtDTO;
-import synchronization.application.listener.StrategyDTO;
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.CrdtDTO;
+import synchronization.application.api.StrategyDTO;
+import synchronization.application.api.StrategyMiddleware;
 import synchronization.domain.CrdtOperationType;
 import synchronization.domain.TransactionRecord;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 

@@ -1,7 +1,6 @@
 package shared.utils;
 
-import synchronization.application.listener.StrategyDTO;
-import synchronization.domain.TransactionRecord;
+import synchronization.application.api.StrategyDTO;
 
 public class ByteMessageHandler {
     public static String serialize(StrategyDTO dto) {

@@ -1,6 +1,6 @@
 import shared.utils.factory.ContextFactory;
 import shared.utils.factory.ContextType;
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.StrategyMiddleware;
 import test_scenario.domain.ScenarioFileLoader;
 import test_scenario.domain.ScenarioRunner;
 import test_scenario.domain.ScenarioSingleAction;

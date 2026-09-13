@@ -1,7 +1,7 @@
 package observer.application.service;
 
 import observer.domain.EventState;
-import synchronization.application.listener.StrategyDTO;
+import synchronization.application.api.StrategyDTO;
 
 public interface ObserverService {
     void connect();

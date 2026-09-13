@@ -1,4 +1,4 @@
-package synchronization.application.listener;
+package synchronization.application.api;
 
 import shared.utils.Base64Codec;
 import shared.utils.StrategyDTOStringParser;
@@ -76,5 +76,10 @@ public class VersionVectorDTO implements StrategyDTO {
                 this.annotationId,
                 new VersionVector(this.versions)
         );
+    }
+
+    @Override
+    public Boolean hasContent() {
+        return this.message != null && !this.message.isEmpty();
     }
 }

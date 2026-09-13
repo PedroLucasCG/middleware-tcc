@@ -1,4 +1,4 @@
-package synchronization.application.listener;
+package synchronization.application.api;
 
 import synchronization.domain.StrategyType;
 import synchronization.domain.TransactionRecord;
@@ -6,6 +6,7 @@ import synchronization.domain.TransactionRecord;
 public interface StrategyDTO {
     String toString();
     TransactionRecord makeTransactionRecordFromDto();
+    Boolean hasContent();
 
     static StrategyDTO makeStrategyDTO(String[] parts) {
         if (parts.length == 0 || parts[0].isBlank()) {

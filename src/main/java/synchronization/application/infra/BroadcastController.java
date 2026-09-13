@@ -1,6 +1,6 @@
 package synchronization.application.infra;
 
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.StrategyMiddleware;
 
 public interface BroadcastController {
     void start(StrategyMiddleware strategyMiddleware);

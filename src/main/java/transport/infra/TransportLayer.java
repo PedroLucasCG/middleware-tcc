@@ -1,8 +1,6 @@
 package transport.infra;
 
-import synchronization.application.listener.StrategyMiddleware;
-
-import java.net.DatagramPacket;
+import synchronization.application.api.StrategyMiddleware;
 
 public interface TransportLayer {
     void start();

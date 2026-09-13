@@ -1,7 +1,7 @@
 package transport.aplication.controller;
 
 import synchronization.application.infra.BroadcastController;
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.StrategyMiddleware;
 import transport.aplication.service.BroadcastService;
 
 public class Controller implements BroadcastController {

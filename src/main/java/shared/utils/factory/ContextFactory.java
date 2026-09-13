@@ -1,6 +1,6 @@
 package shared.utils.factory;
 
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.StrategyMiddleware;
 
 public interface ContextFactory {
     StrategyMiddleware makeMiddleware();

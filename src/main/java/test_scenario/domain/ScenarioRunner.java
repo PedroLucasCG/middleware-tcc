@@ -1,6 +1,6 @@
 package test_scenario.domain;
 
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.StrategyMiddleware;
 import synchronization.domain.TransactionContent;
 import synchronization.domain.TransactionRecord;
 import transport.domain.NodeConfig;

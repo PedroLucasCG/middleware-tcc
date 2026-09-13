@@ -2,8 +2,8 @@ package observer.infra;
 
 import observer.domain.Observer;
 import observer.domain.EventState;
-import synchronization.application.listener.DummyDTO;
-import synchronization.application.listener.StrategyDTO;
+import synchronization.application.api.DummyDTO;
+import synchronization.application.api.StrategyDTO;
 
 import java.net.URI;
 import java.net.http.HttpClient;

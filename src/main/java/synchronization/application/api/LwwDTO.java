@@ -1,8 +1,7 @@
-package synchronization.application.listener;
+package synchronization.application.api;
 
 import synchronization.domain.StrategyType;
 import synchronization.domain.TransactionRecord;
-import transport.domain.NodeConfig;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -52,6 +51,11 @@ public class LwwDTO implements StrategyDTO {
     @Override
     public TransactionRecord makeTransactionRecordFromDto() {
         return new TransactionRecord(this.message, this.deleted, this.nodeIdFromIncomingMessage, this.annotationId);
+    }
+
+    @Override
+    public Boolean hasContent() {
+        return this.message != null && !this.message.isEmpty();
     }
 
 }

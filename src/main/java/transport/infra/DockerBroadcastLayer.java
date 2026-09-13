@@ -1,6 +1,6 @@
 package transport.infra;
 
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.StrategyMiddleware;
 import transport.domain.NodeConfig;
 import transport.domain.PeerInfo;
 import transport.domain.PeerStore;

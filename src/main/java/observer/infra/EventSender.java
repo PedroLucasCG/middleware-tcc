@@ -1,9 +1,7 @@
 package observer.infra;
 
 import observer.domain.EventState;
-import synchronization.application.listener.StrategyDTO;
-
-import java.net.http.WebSocket;
+import synchronization.application.api.StrategyDTO;
 
 public interface EventSender {
     void connect();

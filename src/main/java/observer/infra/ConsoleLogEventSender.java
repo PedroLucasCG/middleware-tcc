@@ -1,7 +1,7 @@
 package observer.infra;
 
 import observer.domain.EventState;
-import synchronization.application.listener.StrategyDTO;
+import synchronization.application.api.StrategyDTO;
 
 public class ConsoleLogEventSender implements EventSender {
     @Override

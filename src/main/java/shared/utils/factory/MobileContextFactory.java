@@ -7,25 +7,24 @@ import observer.application.service.ObserverService;
 import observer.infra.ConsoleLogEventSender;
 import observer.infra.EventSender;
 import synchronization.application.infra.BroadcastController;
-import synchronization.application.listener.Listener;
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.Controller;
+import synchronization.application.api.StrategyMiddleware;
 import synchronization.application.service.CrdtService;
 import synchronization.application.service.SynchronizationService;
 import synchronization.infra.TransactionRecordHashMapStore;
-import transport.aplication.controller.Controller;
 import transport.aplication.service.MobileService;
 
 public class MobileContextFactory implements ContextFactory {
     @Override
     public StrategyMiddleware makeMiddleware() {
-        BroadcastController controller = new Controller(new MobileService());
+        BroadcastController controller = new transport.aplication.controller.Controller(new MobileService());
         SynchronizationService service = new CrdtService(controller, new TransactionRecordHashMapStore());
 
         EventSender eventSender = new ConsoleLogEventSender();
         ObserverService observerService = new ObserverAplicationService(eventSender);
         ObserverAPI observerAPI = new ObserverController(observerService);
 
-        StrategyMiddleware middleware = new Listener(service, observerAPI);
+        StrategyMiddleware middleware = new Controller(service, observerAPI);
         return middleware;
     }
 }

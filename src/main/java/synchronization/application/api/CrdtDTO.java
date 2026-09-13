@@ -1,4 +1,4 @@
-package synchronization.application.listener;
+package synchronization.application.api;
 
 import shared.utils.StrategyDTOStringParser;
 import synchronization.domain.Crdt;
@@ -70,5 +70,10 @@ public class CrdtDTO implements StrategyDTO{
                 this.operations,
                 this.operationStringIndex
         );
+    }
+
+    @Override
+    public Boolean hasContent() {
+        return this.message != null && !this.message.isEmpty();
     }
 }

@@ -1,6 +1,6 @@
 package transport.aplication.service;
 
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.StrategyMiddleware;
 
 public interface BroadcastService {
     void start();

@@ -1,9 +1,9 @@
 package synchronization.application.service;
 
 import shared.utils.ByteMessageHandler;
-import synchronization.application.listener.LwwDTO;
-import synchronization.application.listener.StrategyDTO;
-import synchronization.application.listener.StrategyMiddleware;
+import synchronization.application.api.LwwDTO;
+import synchronization.application.api.StrategyDTO;
+import synchronization.application.api.StrategyMiddleware;
 import synchronization.domain.TransactionRecord;
 import synchronization.application.infra.RecordStore;
 import synchronization.application.infra.BroadcastController;

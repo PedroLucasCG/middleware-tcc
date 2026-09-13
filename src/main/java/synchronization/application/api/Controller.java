@@ -1,19 +1,16 @@
-package synchronization.application.listener;
+package synchronization.application.api;
 
 import observer.application.api.ObserverAPI;
 import observer.domain.EventState;
 import synchronization.application.service.SynchronizationService;
 import synchronization.domain.TransactionRecord;
-import transport.domain.NodeConfig;
 import transport.domain.PeerInfo;
 
-import java.time.Instant;
-
-public class Listener implements StrategyMiddleware {
+public class Controller implements StrategyMiddleware {
     private final SynchronizationService synchronizationService;
     private final ObserverAPI observerAPI;
 
-    public Listener(SynchronizationService synchronizationService, ObserverAPI observerAPI) {
+    public Controller(SynchronizationService synchronizationService, ObserverAPI observerAPI) {
         this.synchronizationService = synchronizationService;
         this.observerAPI = observerAPI;
     }
@@ -42,7 +39,7 @@ public class Listener implements StrategyMiddleware {
 
     @Override
     public void onPeerDiscovered(PeerInfo peer) {
-        logEvent(EventState.RECEIVED, new DummyDTO("Peer discovered: " + peer.address()));
+        logEvent(EventState.CONNECTED, new DummyDTO("Peer discovered: " + peer.address()));
     }
 
     @Override
@@ -53,6 +50,7 @@ public class Listener implements StrategyMiddleware {
     @Override
     public void onMessageReceived(String peerId, byte[] payload) {
         StrategyDTO dto = synchronizationService.readMessage(peerId, payload);
+        if (!dto.hasContent()) return;
         logEvent(EventState.RECEIVED, dto);
     }
 
