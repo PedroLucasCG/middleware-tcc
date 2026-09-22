@@ -1,8 +1,8 @@
-package test_scenario.domain;
+package scenario.domain;
 
 import java.util.UUID;
 
-public record ScenarioSingleAction(
+public record ScenarioActionVersionVector(
         Integer atMs,
         String sender,
         UUID transactionContentId,
