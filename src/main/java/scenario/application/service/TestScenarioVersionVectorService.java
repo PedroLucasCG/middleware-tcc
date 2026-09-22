@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -22,8 +23,8 @@ public class TestScenarioVersionVectorService implements TestScenarioService<Sce
     private final ScheduledExecutorService scheduledExecutorService;
     private final EventHandler eventHandler;
 
-    public TestScenarioVersionVectorService(ScheduledExecutorService scheduledExecutorService, EventHandler eventHandler) {
-        this.scheduledExecutorService = scheduledExecutorService;
+    public TestScenarioVersionVectorService(EventHandler eventHandler) {
+        this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.eventHandler = eventHandler;
     }
 

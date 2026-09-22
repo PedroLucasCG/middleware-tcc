@@ -11,12 +11,13 @@ import synchronization.application.api.Controller;
 import synchronization.application.api.StrategyMiddleware;
 import synchronization.application.service.CrdtService;
 import synchronization.application.service.SynchronizationService;
+import synchronization.domain.StrategyType;
 import synchronization.infra.TransactionRecordHashMapStore;
 import transport.aplication.service.MobileService;
 
 public class MobileContextFactory implements ContextFactory {
     @Override
-    public StrategyMiddleware makeMiddleware() {
+    public StrategyMiddleware makeMiddleware(StrategyType strategyType) {
         BroadcastController controller = new transport.aplication.controller.Controller(new MobileService());
         SynchronizationService service = new CrdtService(controller, new TransactionRecordHashMapStore());
 

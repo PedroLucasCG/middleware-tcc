@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -20,8 +21,8 @@ public class TestScenarioLwwService implements TestScenarioService<ScenarioActio
     private final ScheduledExecutorService scheduledExecutorService;
     private final EventHandler eventHandler;
 
-    public TestScenarioLwwService(ScheduledExecutorService scheduledExecutorService, EventHandler eventHandler) {
-        this.scheduledExecutorService = scheduledExecutorService;
+    public TestScenarioLwwService(EventHandler eventHandler) {
+        this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.eventHandler = eventHandler;
     }
 

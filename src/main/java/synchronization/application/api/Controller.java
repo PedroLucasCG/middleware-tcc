@@ -2,6 +2,7 @@ package synchronization.application.api;
 
 import observer.application.api.ObserverAPI;
 import observer.domain.EventState;
+import scenario.application.api.TestScenarioAPI;
 import synchronization.application.service.SynchronizationService;
 import synchronization.domain.TransactionRecord;
 import transport.domain.PeerInfo;
@@ -9,6 +10,7 @@ import transport.domain.PeerInfo;
 public class Controller implements StrategyMiddleware {
     private final SynchronizationService synchronizationService;
     private final ObserverAPI observerAPI;
+    private TestScenarioAPI testScenarioAPI;
 
     public Controller(SynchronizationService synchronizationService, ObserverAPI observerAPI) {
         this.synchronizationService = synchronizationService;
@@ -16,9 +18,15 @@ public class Controller implements StrategyMiddleware {
     }
 
     @Override
-    public void start() {
+    public void setTestScenarioAPI(TestScenarioAPI testScenarioAPI) {
+        this.testScenarioAPI = testScenarioAPI;
+    }
+
+    @Override
+    public Controller start() {
         synchronizationService.start(this);
         observerAPI.connect();
+        return this;
     }
 
     @Override
@@ -52,6 +60,11 @@ public class Controller implements StrategyMiddleware {
         StrategyDTO dto = synchronizationService.readMessage(peerId, payload);
         if (!dto.hasContent()) return;
         logEvent(EventState.RECEIVED, dto);
+    }
+
+    @Override
+    public void test() {
+        testScenarioAPI.test();
     }
 
     public void logEvent(EventState event, StrategyDTO dto) {

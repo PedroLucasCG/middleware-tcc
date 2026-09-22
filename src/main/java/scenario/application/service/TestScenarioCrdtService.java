@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -23,10 +24,9 @@ public class TestScenarioCrdtService implements TestScenarioService<ScenarioActi
     private final EventHandler eventHandler;
 
     public TestScenarioCrdtService(
-            ScheduledExecutorService scheduledExecutorService,
             EventHandler eventHandler
     ) {
-        this.scheduledExecutorService = scheduledExecutorService;
+        this.scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
         this.eventHandler = eventHandler;
     }
 
